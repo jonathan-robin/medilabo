@@ -1,0 +1,23 @@
+version: '3'
+services:
+  patient-service:
+    build:
+      context: ./service/patient
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+  gateway-service:
+    build:
+      context: ./service/gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - patient-service
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: patientdb
+    ports:
+      - "3306:3306"
