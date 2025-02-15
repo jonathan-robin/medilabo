@@ -9,55 +9,72 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>patient-service</name>
     <description>Microservice for patient management</description>
-
+ 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.0.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
+    
+		<dependencyManagement>
+		    <dependencies>
+		        <dependency>
+		            <groupId>org.hibernate.orm</groupId>
+		            <artifactId>hibernate-platform</artifactId>
+		            <version>6.6.7.Final</version>
+		            <type>pom</type>
+		            <scope>import</scope>
+		        </dependency>
+		    </dependencies>
+		</dependencyManagement>
+		<!-- use the versions from the platform -->
+		<dependencies>
+		    <dependency>
+		        <groupId>org.hibernate.orm</groupId>
+		        <artifactId>hibernate-core</artifactId>
+		    </dependency>
+		    <dependency>
+		        <groupId>jakarta.transaction</groupId>
+		        <artifactId>jakarta.transaction-api</artifactId>
+		    </dependency>
 
-    <dependencies>
+        <!-- Spring Boot Starter Web (for creating REST APIs) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- Spring Boot Starter Data JPA (for database access) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
+        <!-- Lombok (for code generation like getters and setters) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Spring Boot Starter Security (optional for security) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+
+        <!-- Spring Boot Starter Test (for testing purposes) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-		    <groupId>jakarta.persistence</groupId>
-		    <artifactId>jakarta.persistence-api</artifactId>
-		    <version>3.0.0</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-core</artifactId>
-		    <version>5.6.10.Final</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.projectlombok</groupId>
-		    <artifactId>lombok</artifactId>
-		    <version>1.18.24</version>
-		    <scope>provided</scope>
-		</dependency>
     </dependencies>
 
     <build>

@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: patient-service-route
+          uri: http://localhost:8081  #URL micro-svc patient
+          predicates:
+            - Path=/patients/**  # les request /patients/* redirige
+server:
+  port: 8082
