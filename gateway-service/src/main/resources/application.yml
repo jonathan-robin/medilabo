@@ -7,4 +7,4 @@ spring:
           predicates:
             - Path=/patients/**  # les request /patients/* redirige
 server:
-  port: 8082
+  port: 8080

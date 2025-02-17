@@ -33,13 +33,13 @@ public class Patient {
     @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "date_of_birth")
+    @Column(name = "birth_date")
     private LocalDate dateOfBirth;
 
-    @Column(name = "genre")
+    @Column(name = "gender")
     private String genre;
 
-    @Column(name = "patient_address")
+    @Column(name = "address")
     private String address;
 
     @Column(name = "phone_number")
