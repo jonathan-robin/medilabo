@@ -30,10 +30,13 @@ public class PatientController {
     }
     
     @GetMapping("")
-    public ResponseEntity<List<Patient>> getPatients() {
+    public ResponseEntity<List<Patient>> getPatients() throws Exception {
     	log.debug("Call GET /patients: {}");
         List<Patient> patients = patientService.findAll();
-        return patients.size() > 0 ? ResponseEntity.ok(patients) : ResponseEntity.notFound().build();
+        if (patients.size() > 0)
+        	return ResponseEntity.ok(patients); 
+        else 
+        	return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{id}")
