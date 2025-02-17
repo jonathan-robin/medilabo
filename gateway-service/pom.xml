@@ -24,13 +24,37 @@
     </dependencies>
   </dependencyManagement>
 
-  <dependencies>
+<dependencies>
+
     <!-- Spring Cloud Gateway for routing -->
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-gateway</artifactId>
     </dependency>
 
+ <!-- API de JJWT -->
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-api</artifactId>
+        <version>0.12.6</version>
+    </dependency>
+
+    <!-- Implémentation de JJWT -->
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>0.12.6</version>
+        <scope>runtime</scope>
+    </dependency>
+
+    <!-- Support de Jackson pour JJWT -->
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId>
+        <version>0.12.6</version>
+        <scope>runtime</scope>
+    </dependency>
+    
     <!-- Spring Boot Starter Web (for routing and HTTP support) -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

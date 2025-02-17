@@ -2,9 +2,11 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: patient-service-route
-          uri: http://localhost:8081  #URL micro-svc patient
+        - id: patient-service
+          uri: http://localhost:8081
           predicates:
-            - Path=/patients/**  # les request /patients/* redirige
+            - Path=/patients/**
+          filters:
+            - AddRequestHeader=X-Request-Foo, Bar
 server:
   port: 8080
