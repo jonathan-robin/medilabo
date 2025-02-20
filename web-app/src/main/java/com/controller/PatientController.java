@@ -143,6 +143,9 @@ public class PatientController {
 	            .retrieve()
 	            .bodyToMono(PatientDto.class)
 	            .flatMap(patient -> {
+	            	
+	            	log.info("patient in update: {}", patient);
+	            	
 	            	return webClient.get()
 		            	.uri("/notes/patient/"+id)
 		            	.header("Authorization", "Bearer " + _jwt)

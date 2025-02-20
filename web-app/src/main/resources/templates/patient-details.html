@@ -82,9 +82,8 @@
                                 <th>ID</th>
                                 <th>Patient ID</th>
                                 <th>Contenu</th>
-                                <th>Date</th>
-                                <th>Création</th>
-                                <th>Dernière mise à jour</th>
+                                <th>Date de création</th>
+                                <th>Dernière modifications</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -93,14 +92,12 @@
                                 <td th:text="${note.id}"></td>
                                 <td th:text="${note.patientId}"></td>
                                 <td th:text="${note.content}"></td>
-                                <td th:text="${note.date}"></td>
                                 <td th:text="${note.createdAt}"></td>
                                 <td th:text="${note.lastUpdatedAt}"></td>
                                 <td>
                                     <a th:href="@{/notes/edit/{id}(id=${note.id})}" 
                                        class="btn btn-warning btn-sm">Éditer</a>
-                                    <a th:href="@{/notes/delete/{id}(id=${note.id})}" 
-                                       class="btn btn-danger btn-sm">Supprimer</a>
+                                	<a th:href="@{/notes/{patientId}/delete/{id}(patientId=${patient.id}, id=${note.id})}" class="btn btn-danger btn-sm">Supprimer</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -109,7 +106,6 @@
             </div>
         </div>
     </div>
-
     <div th:replace="fragments/footer :: body"></div>
 </body>
 </html>

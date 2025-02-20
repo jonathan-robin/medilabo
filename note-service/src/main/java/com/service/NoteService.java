@@ -2,7 +2,7 @@ package com.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,22 +58,23 @@ public class NoteService {
     	return noteRepo.deleteById(id);
     }
     
-    public Flux<Note> findByPatientId(String id){ 
+    public List<Note> findByPatientId(String id){ 
     	log.info("Find note with patient id {}...", id);
     	return noteRepo.findByPatientId(id);
     }
     
-    public Mono<Note> updateNote(String content, String id){ 
-    	log.info("Updating note with id {} with new comment {}", id, content);
-    	return noteRepo.findById(id)
-    	        .map(n -> {
-    	            n.setContent(content);
-    	            return noteRepo.save(n);  
-    	        })
-    	        .flatMap(savedNoteMono -> savedNoteMono)
-    	        .doOnSuccess(updatedNote -> log.info("Note updated successfully: {}", updatedNote))
-    	        .doOnError(error -> log.error("Error updating note", error));
+    // Met à jour la note
+    public Mono<Note> updateNote(String content, String id) {
+        log.info("Updating note with id {} with new comment {}", id, content);
+        return noteRepo.findById(id)
+            .flatMap(note -> {
+                note.setContent(content);
+                note.setLastUpdatedAt(LocalDateTime.now());
+                return noteRepo.save(note);  // Sauvegarde la note mise à jour
+            })
+            .switchIfEmpty(Mono.error(new RuntimeException("Note not found")));  // Gérer le cas où la note n'est pas trouvée
     }
+
 
     
 	

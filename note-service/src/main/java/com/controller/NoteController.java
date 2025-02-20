@@ -1,6 +1,4 @@
 package com.controller;
-
-
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -50,11 +48,12 @@ public class NoteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Mono<Note>> updateNote(@Valid @RequestBody Note noteUpdated, @PathVariable("id") String id) {
-    	log.info("CALL /notes/id with noteUpdated : {}", noteUpdated.toString());
-        return ResponseEntity.ok(noteService.updateNote(modelMapper.map(noteUpdated, Note.class)));
+    public Mono<Note> updateNote(@Valid @RequestBody String content, @PathVariable("id") String id) {
+        return noteService.updateNote(content, id);
+            
     }
-
+    
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Mono<Void>> deleteNote(@PathVariable(value = "id") String id) {
         return ResponseEntity.ok(noteService.deleteNote(id));
@@ -62,7 +61,7 @@ public class NoteController {
     }
 
     @GetMapping("/patient/{id}")
-    public Flux<Note> findByPatientId(@PathVariable("id") String id) {
+    public List<Note> findByPatientId(@PathVariable("id") String id) {
     	log.info("CALL /patient/id with id : {}", id);
     	return noteService.findByPatientId(id);
 
