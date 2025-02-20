@@ -1,16 +1,17 @@
 package com.dto;
 
-import java.util.Map;
-
-import com.enums.Risk;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Map;
+
+import com.enums.Risk;
+
 @Getter
-@NoArgsConstructor
 @Setter
+@NoArgsConstructor
 public class PatientRiskDto {
 
     private String patientId; 
@@ -18,4 +19,3 @@ public class PatientRiskDto {
     private Risk risk;
     private Integer count;
 }
-

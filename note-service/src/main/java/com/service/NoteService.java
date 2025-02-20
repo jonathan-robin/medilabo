@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
-
+import com.dto.PatientRiskDto;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -16,8 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.Note;
 import com.repository.NoteRepository;
 
-
-
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
@@ -87,8 +86,11 @@ public class NoteService {
     }
     
 
-    
     /*****************************************************/
 	
+    public Mono<PatientRiskDto> computeTriggers(Long patientId, List<String> triggers) {
+        return noteRepo.computeTriggers(patientId, triggers);
+    }
+    
 	
 }

@@ -2,16 +2,31 @@ package com.repository;
 
 import java.util.List;
 
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
+import com.dto.PatientRiskDto;
 import com.model.Note;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
 public interface NoteRepository extends ReactiveMongoRepository<Note, String> {
     
 	 public Flux<Note> findByPatientId(String id);
+	 
+	 @Aggregation(pipeline = {
+			    "{$match: {'patient._id': ?0}}",
+			    "{$addFields: {termsTrigger: {$regexFindAll: {input: '$content', regex: ?1, options: 'i'}}}}",
+			    "{$set: {termsTrigger: {$map: {input: '$termsTrigger.match', in: {$toLower: '$$this'}}}}}",
+			    "{$unwind: {path: '$termsTrigger', includeArrayIndex: 'string', preserveNullAndEmptyArrays: true}}",
+			    "{$group: { _id: '$patient._id', termsTrigger: { $addToSet: '$termsTrigger' }}}",
+			    "{$project: { count: { $size: '$termsTrigger' }, triggers: { $arrayToObject: { $map: { input: ?2, as: 'trigger', in: { k: '$$trigger', v: { $cond: [ { $in: ['$$trigger', '$termsTrigger'] }, 1, 0 ] } } } } } }}}"
+			})
+			Mono<PatientRiskDto> computeTriggers(Long patientId, List<String> triggers);
+
+
 	
 }

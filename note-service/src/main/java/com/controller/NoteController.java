@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.dto.PatientRiskDto;
 import com.model.Note;
 import com.service.NoteService;
 import jakarta.validation.Valid;
@@ -68,5 +70,12 @@ public class NoteController {
     	return (Flux<Note>)noteService.findByPatientId(id);
 
     }
+    
+    @PostMapping("/triggers/{patientId}")
+    public ResponseEntity<Mono<PatientRiskDto>> computeTriggers(@PathVariable("patientId") Long patientId, @RequestBody List<String> triggers) {
+    	return ResponseEntity.ok(noteService.computeTriggers(patientId, triggers));
+//                .map(sum -> modelMapper.map(sum, SumTermTriggersDto.class)));
+    }
+
 
 }
