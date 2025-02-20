@@ -24,10 +24,16 @@ public class RouteConfig {
 	                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
 	                                .uri("http://localhost:8081/patients"))
                                 
-                                .route("auth", r -> r.path("/login")
-                                        .and()
-                                        .method(HttpMethod.POST)
-                                        .uri("http://localhost:8080/login"))
+                                /* work well but auth is handle by gateway try to make a dedicated ms */
+//                                .route("auth", r -> r.path("/login")
+//                                        .and()
+//                                        .method(HttpMethod.POST)
+//                                        .uri("http://localhost:8080/login"))
+                                
+                              .route("auth", r -> r.path("/login")
+                              .and()
+                              .method(HttpMethod.POST)
+                              .uri("http://localhost:8084/login"))
                                 
                                 .build();
 
