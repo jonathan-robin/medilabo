@@ -82,7 +82,7 @@
 
     <div class="container">
         <h2>Modifier la Note</h2>
-        <form th:action="@{/notes/edit}" method="post" th:object="${note}">
+        <form th:action="@{/notes/edit/{id}(id=${note.patientId})}" method="post" th:object="${note}">
             <input disabled="disabled" th:field="*{id}" />
 
             <label for="content">Commentaire :</label>

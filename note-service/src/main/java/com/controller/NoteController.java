@@ -49,8 +49,9 @@ public class NoteController {
         return ResponseEntity.ok(noteService.saveNote(modelMapper.map(noteToCreate, Note.class)));
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Mono<Note>> updateNote(@Valid @RequestBody Note noteUpdated, @PathVariable("id") String id) {
+    	log.info("CALL /notes/id with noteUpdated : {}", noteUpdated.toString());
         return ResponseEntity.ok(noteService.updateNote(modelMapper.map(noteUpdated, Note.class)));
     }
 

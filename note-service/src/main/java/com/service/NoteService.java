@@ -62,6 +62,18 @@ public class NoteService {
     	log.info("Find note with patient id {}...", id);
     	return noteRepo.findByPatientId(id);
     }
+    
+    public Mono<Note> updateNote(String content, String id){ 
+    	log.info("Updating note with id {} with new comment {}", id, content);
+    	return noteRepo.findById(id)
+    	        .map(n -> {
+    	            n.setContent(content);
+    	            return noteRepo.save(n);  
+    	        })
+    	        .flatMap(savedNoteMono -> savedNoteMono)
+    	        .doOnSuccess(updatedNote -> log.info("Note updated successfully: {}", updatedNote))
+    	        .doOnError(error -> log.error("Error updating note", error));
+    }
 
     
 	
