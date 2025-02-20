@@ -20,6 +20,7 @@ import org.modelmapper.ModelMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -32,7 +33,36 @@ public class NoteService {
     
     @Autowired
     private NoteRepository noteRepo;
+    
+    public Flux<Note> findAll(){ 
+    	return noteRepo.findAll();
+    }
+    
+    public Mono<Note> findById(String id) { 
+    	return noteRepo.findById(id.toString());
+    }
+    
+    public Mono<Note> updateNote(Note note){
+    	return noteRepo.save(note);
+    }
+    
+    public Mono<Note> saveNote(Note note) {
+        return noteRepo.save(note);
+    }
+    
+    public Mono<Void> deleteNote(String id){ 
+    	return noteRepo.deleteById(id);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 	
+    /*********** Import note from json file ***********/
     public void importAll(InputStream jsonStream) throws StreamReadException, DatabindException, IOException {
 
     	objectMapper.readValue(jsonStream, new TypeReference<List<NoteDto>>(){})
@@ -42,9 +72,9 @@ public class NoteService {
 			});
     }
     
-    public Mono<Note> saveNote(Note note) {
-        return noteRepo.save(note);
-    }
+
+    
+    /*****************************************************/
 	
 	
 }
