@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.dto.NoteDto;
 import com.model.Note;
 import com.service.NoteService;
 import jakarta.validation.Valid;
@@ -41,20 +40,17 @@ public class NoteController {
     @GetMapping("/{id}")
     public Mono<ResponseEntity<Note>> findById(@PathVariable("id") String id) {
         return noteService.findById(id)
-        .map(note -> new ResponseEntity<Note>(modelMapper.map(note, Note.class), HttpStatus.FOUND))
+        .map(note -> new ResponseEntity<Note>(note, HttpStatus.FOUND))
         .switchIfEmpty(Mono.error(new Exception("No note found")));
-        
-        
-//        .switchIfEmpty(Mono.error(new NoteNotFoundException(messageSource.getMessage(NOT_FOUND, new Object[] {id}, Locale.ENGLISH))));
     }
 
     @PostMapping
-    public ResponseEntity<Mono<Note>> createNote(@Valid @RequestBody NoteDto noteToCreate) {
+    public ResponseEntity<Mono<Note>> createNote(@Valid @RequestBody Note noteToCreate) {
         return ResponseEntity.ok(noteService.saveNote(modelMapper.map(noteToCreate, Note.class)));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Mono<Note>> updateNote(@Valid @RequestBody NoteDto noteUpdated, @PathVariable("id") String id) {
+    public ResponseEntity<Mono<Note>> updateNote(@Valid @RequestBody Note noteUpdated, @PathVariable("id") String id) {
         return ResponseEntity.ok(noteService.updateNote(modelMapper.map(noteUpdated, Note.class)));
     }
 
@@ -68,7 +64,6 @@ public class NoteController {
     public Flux<Note> findByPatientId(@PathVariable("id") String id) {
     	log.info("CALL /patient/id with id : {}", id);
     	return noteService.findByPatientId(id);
-//                .map(note -> modelMapper.map(note, NoteDto.class));
 
     }
 

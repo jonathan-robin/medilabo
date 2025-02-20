@@ -1,5 +1,6 @@
 package com.dto;
 
+import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -22,7 +23,6 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NoteDto {
 
-    @NotNull(message="you don't need to post a id")
     private String id;
 
     @NotNull(message = "date must be not null")
@@ -34,4 +34,20 @@ public class NoteDto {
 
     @Valid
     private String patientId;
+
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+      
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastUpdatedAt;
+
+
+    public NoteDto(String id, LocalDateTime createdAt, LocalDateTime lastUpdatedAt, String content, String patientId) {
+        this.id = id;
+        this.content = content;
+        this.patientId = patientId;
+        this.lastUpdatedAt = lastUpdatedAt != null ? lastUpdatedAt : null;
+        this.createdAt = (createdAt != null) ? createdAt : LocalDateTime.now();
+    }
 }

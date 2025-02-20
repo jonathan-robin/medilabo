@@ -60,8 +60,7 @@ public class AuthController {
     
     @PostMapping(value = "/login")
     public Mono<String> postLogin(@ModelAttribute Credentials credentials,
-//    		HttpSession session,  
-    		HttpServletRequest request, HttpServletResponse response, Model model) {
+    	HttpServletRequest request, HttpServletResponse response, Model model) {
     	
         return webClientBuilder.build().post()
                 .uri("http://localhost:8080/login")

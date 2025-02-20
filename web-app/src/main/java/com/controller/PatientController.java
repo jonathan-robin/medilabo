@@ -133,7 +133,9 @@ public class PatientController {
     		log.info("No auth available");
     		return Mono.just("login");
     	}
-    	 final String _jwt = jwt;
+    	
+    	final String _jwt = jwt;
+    	
    	    return webClient.get()
 	            .uri("/patients/" + id)
 	            .header("Authorization", "Bearer " + jwt)

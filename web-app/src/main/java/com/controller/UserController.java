@@ -11,22 +11,22 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-    @RequestMapping("/session")
-    public class UserController {
+@RequestMapping("/session")
+public class UserController {
 
-        @GetMapping("/user")
-        public ResponseEntity<String> getUser(Authentication authentication) {
-            if (authentication == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Aucun utilisateur connecté.");
-            }
-            
-            return ResponseEntity.ok("Utilisateur connecté : " + authentication.getName());
+    @GetMapping("/user")
+    public ResponseEntity<String> getUser(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Aucun utilisateur connecté.");
         }
         
-        @GetMapping("/test-auth")
-        public ResponseEntity<?> testAuth() {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            log.info("Current user: {}", auth);
-            return ResponseEntity.ok(auth);
-        }
+        return ResponseEntity.ok("Utilisateur connecté : " + authentication.getName());
     }
+    
+    @GetMapping("/test-auth")
+    public ResponseEntity<?> testAuth() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Current user: {}", auth);
+        return ResponseEntity.ok(auth);
+    }
+}
