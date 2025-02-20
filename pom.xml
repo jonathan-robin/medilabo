@@ -21,6 +21,7 @@
 	    <module>gateway-service</module>
 	    <module>web-app</module>
 	    <module>auth</module>
+	    <module>note-service</module>
 	</modules>
 	<url/>
 	<licenses>
