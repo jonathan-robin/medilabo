@@ -20,6 +20,7 @@
 	    <module>patient-service</module>
 	    <module>gateway-service</module>
 	    <module>web-app</module>
+	    <module>auth</module>
 	</modules>
 	<url/>
 	<licenses>

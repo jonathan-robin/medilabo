@@ -1,5 +1,8 @@
 package com.dto;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class PatientDto {
     private Long id;
     private String firstName;

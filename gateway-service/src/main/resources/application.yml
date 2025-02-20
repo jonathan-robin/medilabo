@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     gateway:
       routes:
@@ -7,6 +9,10 @@ spring:
           predicates:
             - Path=/patients/**
           filters:
-            - AddRequestHeader=X-Request-Foo, Bar
-server:
-  port: 8080
+            - AddRequestHeader=Authorization, "#{T(org.springframework.web.server.ServerWebExchange).getRequest().getHeaders().getFirst('Authorization')}"
+        
+        - id: auth-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/login
+          filters:

@@ -11,10 +11,14 @@
 	<div th:replace="fragments/header :: body"></div>
     <div class="container mt-5">
         <h2 class="mb-4">Liste des patients</h2>
-        <a href="/patients/new" class="btn btn-success mb-3">Ajouter un patient</a>
+<a th:href="@{/patients}" class="btn btn-primary btn-sm">List</a>
+                           
+<a th:href="@{/patients/new}" class="btn btn-primary btn-sm">Ajouter</a>
+     
         <table class="table table-striped">
             <thead>
                 <tr>
+                token: ${token}
                     <th>ID</th>
                     <th>Nom</th>
                     <th>Prénom</th>
@@ -35,9 +39,9 @@
                     <td th:text="${patient.address}"></td>
                     <td th:text="${patient.phoneNumber}"></td>
                     <td>
-                        <a th:href="@{/patients/edit/{id}(id=${patient.id})}" 
+                        <a th:href="@{/patients/{id}(id=${patient.id})}" 
                            class="btn btn-primary btn-sm">Modifier</a>
-                        <a th:href="@{/patients/delete/{id}(id=${patient.id})}" 
+                        <a th:href="@{/patients/{id}(id=${patient.id})}" 
                            class="btn btn-danger btn-sm">Supprimer</a>
                     </td>
                 </tr>
@@ -45,5 +49,6 @@
         </table>
     </div>
     <div th:replace="fragments/footer :: body"></div>
+      
 </body>
 </html>

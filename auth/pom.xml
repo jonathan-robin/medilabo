@@ -1,23 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com</groupId>
+    <artifactId>medilabo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>auth</artifactId>
 
-    <groupId>com.medilabo</groupId>
-    <artifactId>web-app</artifactId>
-    <name>web-app</name>
-    <description>Front web app for medilabo</description>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.0</version>
-        <relativePath/>
-    </parent>
-
-    <properties>
+<properties>
         <java.version>17</java.version>
         <spring.boot.version>3.2.2</spring.boot.version> <!-- Vérifie la version de Spring Boot utilisée -->
     </properties>
@@ -28,6 +19,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        
+        <dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-web</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-webflux</artifactId>
+		</dependency>
+
 
         <!-- Thymeleaf (pour le rendu des pages HTML) -->
         <dependency>
@@ -36,29 +37,30 @@
         </dependency>
 
     <!-- Spring Boot WebFlux -->
-<!--    <dependency>
+    <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-webflux</artifactId>
-    </dependency>-->
-<!--    <dependency>
+    </dependency>
+
+    <!-- Spring Security WebFlux -->
+    <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>-->
-    <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-</dependency>
+    </dependency>
 
-
+    <!-- Spring Security Core pour la gestion de l'authentification et des utilisateurs -->
     <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
     </dependency>
-   <dependency>
+
+    <!-- BCrypt pour encoder les mots de passe -->
+    <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-crypto</artifactId>
     </dependency>
 
+    <!-- Spring Boot Starter Test (facultatif, pour les tests) -->
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-test</artifactId>
@@ -67,28 +69,34 @@
 
 
 
-	    <!--<dependency>
+	    <dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-oauth2-resource-server</artifactId>
 		</dependency>
--->
+
 	    <dependency>
 		    <groupId>org.projectlombok</groupId>
 		    <artifactId>lombok</artifactId>
 		    <scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>1.15</version> <!-- Vérifie la version la plus récente si nécessaire -->
+</dependency>
 
 	 <!-- API de JJWT -->
-	<!--<dependency>
+	<dependency>
 	    <groupId>io.jsonwebtoken</groupId>
 	    <artifactId>jjwt-api</artifactId>
-	    <version>0.11.5</version>   Assurez-vous d'utiliser cette version ou plus récente 
+	    <version>0.11.5</version>  <!-- Assurez-vous d'utiliser cette version ou plus récente -->
 	</dependency>
 	
 	<dependency>
 	    <groupId>io.jsonwebtoken</groupId>
 	    <artifactId>jjwt-impl</artifactId>
-	    <version>0.11.5</version>   Même version ici 
+	    <version>0.11.5</version>  <!-- Même version ici -->
 	</dependency>
 
 
@@ -96,9 +104,9 @@
 	<dependency>
 	    <groupId>io.jsonwebtoken</groupId>
 	    <artifactId>jjwt-jackson</artifactId>
-	    <version>0.11.5</version>   Et cette dépendance pour la gestion des objets JSON 
+	    <version>0.11.5</version>  <!-- Et cette dépendance pour la gestion des objets JSON -->
 	</dependency>
--->
+
        
 
         <!-- Outils de développement pour le rechargement à chaud -->
@@ -108,33 +116,8 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-     <dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+     
 
     </dependencies>
 
@@ -147,5 +130,5 @@
             </plugin>
         </plugins>
     </build>
-
-</project>
+    
+  </project>

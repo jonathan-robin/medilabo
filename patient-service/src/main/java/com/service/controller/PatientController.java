@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.service.model.Patient;
 import com.service.service.PatientService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -30,7 +31,7 @@ public class PatientController {
     }
     
     @GetMapping("")
-    public ResponseEntity<List<Patient>> getPatients() throws Exception {
+    public ResponseEntity<List<Patient>> getPatients(HttpSession session) throws Exception {
     	log.debug("Call GET /patients: {}");
         List<Patient> patients = patientService.findAll();
         if (patients.size() > 0)
