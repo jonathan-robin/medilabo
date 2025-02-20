@@ -6,12 +6,14 @@
 //import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 //import org.springframework.security.web.SecurityFilterChain;
 //
+//import io.netty.handler.codec.http2.Http2SecurityUtil;
+//
 //@Configuration
-//@EnableWebSecurity
+//
 //public class GatewaySecurityConfig {
 //
 //    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//    public SecurityFilterChain securityFilterChain(Http2SecurityUtil http) throws Exception {
 //        http
 //            .csrf().disable()  // Désactive CSRF si non nécessaire
 //            .authorizeRequests()

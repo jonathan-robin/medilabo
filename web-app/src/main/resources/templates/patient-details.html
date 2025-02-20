@@ -42,7 +42,12 @@
                 <td th:text="${patient.phoneNumber}"></td>
             </tr>
         </table>
+        
         <a href="/patients" class="btn btn-secondary">Retour</a>
+            <div>
+              <a th:href="@{/patients/edit/{id}(id=${patient.id})}" 
+                           class="btn btn-primary btn-sm">Modifier</a>
+    </div>
     </div>
     <div th:replace="fragments/footer :: body"></div>
 </body>

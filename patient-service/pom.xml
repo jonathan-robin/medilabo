@@ -28,6 +28,11 @@
 		        </dependency>
 		    </dependencies>
 		</dependencyManagement>
+		
+		
+		
+		
+		
 		<!-- use the versions from the platform -->
 		<dependencies>
 		    <dependency>
@@ -42,6 +47,11 @@
 		    <groupId>org.hibernate.validator</groupId>
 		    <artifactId>hibernate-validator</artifactId>
 		</dependency>
+		    <dependency>
+		        <groupId>org.mapstruct</groupId>
+		        <artifactId>mapstruct</artifactId>
+		        <version>1.5.2.Final</version> <!-- Utilisez la dernière version disponible -->
+		    </dependency>
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-security</artifactId>
@@ -79,10 +89,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-		 <dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+
 		
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
 		<dependency>
@@ -104,7 +111,12 @@
 			<version>0.12.3</version>
 			<scope>runtime</scope>
 		</dependency>
-
+<dependency>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct-processor</artifactId>
+    <version>1.5.2.Final</version>
+    <scope>provided</scope>
+</dependency>
 
         <!-- Spring Boot Starter Security (optional for security) -->
 <!--        <dependency>
@@ -125,6 +137,30 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                            <version>3.0.0</version> 
+                 <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.mapstruct</groupId>
+                        <artifactId>mapstruct-processor</artifactId>
+                        <version>1.5.2.Final</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+                <!--<version>3.8.1</version>
+	            <configuration>
+	                <source>1.8</source>
+	                <target>1.8</target>
+	                <annotationProcessorPaths>
+	                    <path>
+	                        <groupId>org.mapstruct</groupId>
+	                        <artifactId>mapstruct-processor</artifactId>
+	                        <version>1.5.2.Final</version>  Utilisez la même version 
+	                    </path>
+	                </annotationProcessorPaths>
+	            </configuration>-->
             </plugin>
             
 			<plugin>

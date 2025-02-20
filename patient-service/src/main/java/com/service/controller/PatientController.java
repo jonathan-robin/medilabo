@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.service.dto.PatientDto;
+import com.service.mapper.PatientMapper;
 import com.service.model.Patient;
 import com.service.service.PatientService;
 
@@ -56,8 +58,12 @@ public class PatientController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patient) {
-        Patient updatedPatient = patientService.updatePatient(id, patient);
+    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody PatientDto patientDto) {
+    	
+    	 Patient patient = PatientMapper.INSTANCE.toPatient(patientDto);
+
+    	    // Mettre à jour le patient via le service
+    	    Patient updatedPatient = patientService.updatePatient(id, patient);
         if (updatedPatient != null) 
             return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

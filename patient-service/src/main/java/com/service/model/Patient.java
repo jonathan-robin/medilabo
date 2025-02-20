@@ -54,6 +54,5 @@ public class Patient {
     private String address;
 
     @Column(name = "phone_number")
-    @Pattern(regexp = "^\\+?\\d{10,15}$", message = "Le numéro de téléphone est invalide")
     private String phoneNumber;
 }
