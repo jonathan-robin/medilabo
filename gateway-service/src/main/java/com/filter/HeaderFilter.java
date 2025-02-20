@@ -83,6 +83,9 @@ public class HeaderFilter extends AbstractGatewayFilterFactory<HeaderFilter.Conf
 //    	log.info("apply: {}", config);
         return (exchange, chain) -> {
         	
+        	
+//        	if (exchange.getRequest().getURI().getPath().equals(config))
+//        	
         	log.info("request path: {}", exchange.getRequest().getURI().getPath());
 
 
