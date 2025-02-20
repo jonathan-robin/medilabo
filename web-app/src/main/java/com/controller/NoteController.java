@@ -259,7 +259,7 @@ public class NoteController {
    	            .bodyToMono(List.class)
    	            .flatMap(notes -> {
    	            	return webClient.get()
-    	                    .uri("patients/" + ((NoteDto) notes.get(0)).getPatientId())
+    	                    .uri("patients/" + patientId)
     	                    .header("Authorization", "Bearer " + _jwt)
     	                    .cookie("JWT", _jwt)
     	                    .retrieve()
@@ -273,7 +273,7 @@ public class NoteController {
 		   	         return Mono.just("patient-details");
    	            })
    	            .onErrorResume(e -> {
-   	                log.error("Erreur lors de l'update de la note", e);
+   	                 log.error("Erreur lors de l'update de la note", e);
   	 	               model.addAttribute("note", new NoteDto());
   	 	              return Mono.just("notes/edit-form");
    	            });
