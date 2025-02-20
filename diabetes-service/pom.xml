@@ -6,4 +6,23 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>diabetes-service</artifactId>
+  
+  
+  <dependencies>
+    <!-- Lombok dependency -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.24</version> <!-- Utilise la dernière version stable -->
+        <scope>provided</scope> <!-- Lombok est utilisé au moment de la compilation, mais pas à l'exécution -->
+    </dependency>
+    
+        <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>31.0-jre</version> <!-- Utilise la dernière version stable de Guava -->
+    </dependency>
+</dependencies>
+
+  
 </project>
