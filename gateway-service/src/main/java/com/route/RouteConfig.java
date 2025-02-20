@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 
 import com.filter.HeaderFilter;
 import com.filter.HeaderFilter.Config;
+import com.model.Credentials;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,9 +35,7 @@ public class RouteConfig {
                               .and()
                               .method(HttpMethod.POST)
                               .uri("http://localhost:8084/login"))
-                                
-                                .build();
-
+                               .build();
                 
                 
         }

@@ -15,25 +15,25 @@ public class PreFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        // Récupérer l'en-tête Authorization qui contient le JWT
+    	
+    	if (exchange.getRequest().getURI().getPath().equals("/login")) {
+    		return chain.filter(exchange);
+    	}
+    	
         String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            // Extraire le JWT du header Authorization
-            String jwtToken = authorizationHeader.substring(7);  // Retirer "Bearer " du début du token
+            String jwtToken = authorizationHeader.substring(7);  
 
             log.info("JWT Token found: {}", jwtToken);
 
-            // Ajouter le JWT dans les en-têtes de la requête sortante vers les autres microservices
             exchange = exchange.mutate()
                 .request(r -> r.headers(headers -> headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)))
-//                .response(r -> r.header(headers -> headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)))
                 .build();
         } else {
             log.warn("No JWT token found in the request");
         }
 
-        // Passer la requête au prochain filtre dans la chaîne
         return chain.filter(exchange);
     }
 

@@ -17,21 +17,23 @@ import reactor.core.publisher.Mono;
 public class AuthService {
 	
 	 @Value("${token.secret.key}")
-	 private static String secretKey;
+	 
+	 
+	 private static String secretKey = "7DA2220C0016000C0047BB08F1F84BCD208F369A45AE16D5CC27E464FCE388A0";
 
-	@Value("${token.expiration.time}")
-	private static long expirationMs;
 
-    public Mono<String> login(String username, String password) {
+	private static long expirationMs = 3600000;
+
+    public String login(String username, String password) throws RuntimeException {
         if (isValidUser(username, password)) {
-            return Mono.just(generateJwt(username)); 
+            return generateJwt(username); 
         } else {
-            return Mono.error(new RuntimeException("Invalid credentials"));
+            throw new RuntimeException("Invalid credentials");
         }
     }
 
     private boolean isValidUser(String username, String password) {
-        return "user".equals(username) && "password".equals(password);  
+        return "user".equals(username) && "pass".equals(password);  
     }
 
     public static String generateJwt(String username) {
