@@ -30,7 +30,7 @@ public class NoteController {
     private final NoteService noteService;
     private final ModelMapper modelMapper;
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<Flux<Note>> findAll() {
         return ResponseEntity.ok(noteService.findAll());
     }
@@ -42,28 +42,30 @@ public class NoteController {
         .switchIfEmpty(Mono.error(new Exception("No note found")));
     }
 
-    @PostMapping
-    public ResponseEntity<Mono<Note>> createNote(@Valid @RequestBody Note noteToCreate) {
+    @PostMapping("")
+    public ResponseEntity<Mono<List<Note>>> createNote(@Valid @RequestBody Note noteToCreate) {
+    	log.info("Call to controller create Note...");
+    	log.info("noteToCreate : {} {} {} {} {} {}", noteToCreate.getContent(), noteToCreate.getId(), noteToCreate.getCreatedAt(), noteToCreate.getLastUpdatedAt(), noteToCreate.getPatientId());
         return ResponseEntity.ok(noteService.saveNote(modelMapper.map(noteToCreate, Note.class)));
     }
 
     @PutMapping("/{id}")
     public Mono<Note> updateNote(@Valid @RequestBody String content, @PathVariable("id") String id) {
         return noteService.updateNote(content, id);
-            
+
     }
     
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Mono<Void>> deleteNote(@PathVariable(value = "id") String id) {
         return ResponseEntity.ok(noteService.deleteNote(id));
-
     }
 
-    @GetMapping("/patient/{id}")
-    public List<Note> findByPatientId(@PathVariable("id") String id) {
+    @SuppressWarnings("unchecked")
+	@GetMapping("/patient/{id}")
+    public Flux<Note> findByPatientId(@PathVariable("id") String id) {
     	log.info("CALL /patient/id with id : {}", id);
-    	return noteService.findByPatientId(id);
+    	return (Flux<Note>)noteService.findByPatientId(id);
 
     }
 

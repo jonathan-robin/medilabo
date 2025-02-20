@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -48,9 +49,10 @@ public class NoteService {
     	return noteRepo.save(note);
     }
     
-    public Mono<Note> saveNote(Note note) {
-    	log.info("Saving note ...{}", note.toString());
-        return noteRepo.save(note);
+    public Mono<List<Note>> saveNote(Note note) {
+    	log.info("Saving note with...");
+    	return noteRepo.save(note).flatMap(n -> noteRepo.findByPatientId(note.getPatientId()).collectList());
+//    	return noteRepo.findByPatientId(note.getPatientId()).collectList();
     }
     
     public Mono<Void> deleteNote(String id){ 
@@ -58,7 +60,7 @@ public class NoteService {
     	return noteRepo.deleteById(id);
     }
     
-    public List<Note> findByPatientId(String id){ 
+    public Flux<Note> findByPatientId(String id){ 
     	log.info("Find note with patient id {}...", id);
     	return noteRepo.findByPatientId(id);
     }

@@ -7,12 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import com.model.Note;
 
-
-
+import reactor.core.publisher.Flux;
 
 @Repository
 public interface NoteRepository extends ReactiveMongoRepository<Note, String> {
     
-	 public List<Note> findByPatientId(String id);
+	 public Flux<Note> findByPatientId(String id);
 	
 }
