@@ -45,7 +45,7 @@ public class NoteController {
     @PostMapping("")
     public ResponseEntity<Mono<List<Note>>> createNote(@Valid @RequestBody Note noteToCreate) {
     	log.info("Call to controller create Note...");
-    	log.info("noteToCreate : {} {} {} {} {} {}", noteToCreate.getContent(), noteToCreate.getId(), noteToCreate.getCreatedAt(), noteToCreate.getLastUpdatedAt(), noteToCreate.getPatientId());
+    	log.info("noteToCreate : {} {} {} {} {}", noteToCreate.getContent(), noteToCreate.getId(), noteToCreate.getCreatedAt(), noteToCreate.getLastUpdatedAt(), noteToCreate.getPatientId());
         return ResponseEntity.ok(noteService.saveNote(modelMapper.map(noteToCreate, Note.class)));
     }
 

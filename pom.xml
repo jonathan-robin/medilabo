@@ -22,6 +22,7 @@
 	    <module>web-app</module>
 	    <module>auth</module>
 	    <module>note-service</module>
+	    <module>diabetes-service</module>
 	</modules>
 	<url/>
 	<licenses>

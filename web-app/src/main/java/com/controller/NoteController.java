@@ -23,7 +23,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Controller
@@ -78,7 +77,6 @@ public class NoteController {
 	            });
 
     }
-    
 
 	@PostMapping("/{patientId}/edit/{id}/")
     public Mono<String> editNote(@ModelAttribute("note") NoteDto noteDto, @PathVariable Integer patientId, @PathVariable String id, Model model, HttpServletRequest request) {
@@ -147,8 +145,7 @@ public class NoteController {
         	        return Mono.just("patient-details");  // Retourner une vue d'erreur
         	    });
     }
-
-    
+ 
     @GetMapping("/{patientId}/delete/{id}")
     public Mono<String> deleteNote(@PathVariable String id, Model model, @PathVariable String patientId, HttpServletRequest request) {
     	
@@ -223,7 +220,6 @@ public class NoteController {
          return "notes/add-form"; // Nom du templ
     }
 
-    // Soumettre le formulaire d'ajout de note
     @PostMapping("/{patientId}")
     public Mono<String> saveNote(@PathVariable("patientId") String patientId, @ModelAttribute("note") NoteDto noteDto, Model model, HttpServletRequest request) {
     	
@@ -250,6 +246,11 @@ public class NoteController {
           
           final String _jwt = jwt;
 
+          /******************************************************************/
+          /******************************************************************/
+          /********************* TODO ***********************************/
+          /*
+           */
    	    return webClient.post()
    	            .uri("/notes")
                 .bodyValue(noteDto)
@@ -277,7 +278,8 @@ public class NoteController {
   	 	               model.addAttribute("note", new NoteDto());
   	 	              return Mono.just("notes/edit-form");
    	            });
-
+   	 /******************************************************************/
+   	 /******************************************************************/
 
     }
 
