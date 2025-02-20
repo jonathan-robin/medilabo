@@ -23,8 +23,6 @@ public enum Trigger {
     REACTION("Réaction"),
     ANTICORPS("Anticorps");
 	
-	
-	
     private String label = null;
 
 	@Override

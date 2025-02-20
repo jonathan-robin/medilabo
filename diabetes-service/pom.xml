@@ -22,6 +22,12 @@
         <artifactId>guava</artifactId>
         <version>31.0-jre</version> <!-- Utilise la dernière version stable de Guava -->
     </dependency>
+    
+    <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-webflux</artifactId>
+</dependency>
+    
 </dependencies>
 
   

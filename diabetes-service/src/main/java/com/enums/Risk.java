@@ -14,7 +14,8 @@ public enum Risk {
 	NONE("None"),
 	BORDERLINE("Borderline"),
 	INDANGER("In Danger"),
-	EARLYONSET("Early onset");
+	EARLYONSET("Early onset"), 
+	empty("");
 
 	private String label = null;
 
