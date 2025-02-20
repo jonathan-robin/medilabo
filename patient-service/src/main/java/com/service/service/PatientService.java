@@ -39,5 +39,11 @@ public class PatientService {
         }
         return null;  
     }
+    
+    public void deletePatientById(Long id) {
+        if (patientRepository.findById(id) != null)
+        	patientRepository.deleteById(id);
+    }
+
 
 }

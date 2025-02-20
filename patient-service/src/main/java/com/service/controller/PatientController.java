@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,10 +52,12 @@ public class PatientController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     
-    @PostMapping
-    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
-        Patient newPatient = patientService.savePatient(patient);
-        return new ResponseEntity<>(newPatient, HttpStatus.CREATED);
+    @PostMapping("")
+    public ResponseEntity<List<Patient>> createPatient(@RequestBody PatientDto patientDto) {
+    	
+    	Patient patient = PatientMapper.INSTANCE.toPatient(patientDto);
+        patientService.savePatient(patient);
+        return new ResponseEntity<>(patientService.findAll(), HttpStatus.CREATED);
     }
     
     @PutMapping("/{id}")
@@ -67,6 +70,16 @@ public class PatientController {
         if (updatedPatient != null) 
             return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<List<Patient>> deletePatient(@PathVariable Long id) throws Exception {
+//    	 Patient patient = PatientMapper.INSTANCE.toPatient(patientDto);
+    	 if (patientService.findPatientById(id) != null)
+    		 patientService.deletePatientById(id);
+    	 else 
+    		 throw new Exception("can't find patient");
+    	 return new ResponseEntity<>(patientService.findAll(), HttpStatus.ACCEPTED);
     }
   
     

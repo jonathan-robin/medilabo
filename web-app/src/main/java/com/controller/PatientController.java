@@ -235,16 +235,6 @@ public class PatientController {
  	        return Mono.just("login");
  	    }
 
-//    }
-//    
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patient) {
-//        Patient updatedPatient = patientService.updatePatient(id, patient);
-//        if (updatedPatient != null) 
-//            return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
-//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//    }
- 	    
  	    log.info("JPOST WT in patient controller /edit/{id} : {}", jwt);
  	    return webClient.put()
  	            .uri("/patients/" + id)
@@ -266,6 +256,110 @@ public class PatientController {
 
     	
     	
+
+    }
+    
+    // Sauvegarde ou mise à jour du patient
+    @GetMapping("/delete/{id}")
+    public Mono<String> deletePatient(@PathVariable Long id, Model model,  HttpServletRequest request) {
+    	
+    	String jwtFromHeader = null;
+ 	    String jwtFromCookie = null;
+ 	    String jwt = null;
+
+ 	    if (request.getHeader("Authorization") != null)
+ 	        jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
+
+ 	    Cookie[] cookies = request.getCookies();
+ 	    for (Cookie cookie: cookies) {
+ 	        if (cookie.getName().equals("JWT")) {
+ 	            jwtFromCookie = cookie.getValue();
+ 	        }
+ 	    }
+
+ 	    if (jwtFromCookie != null)
+ 	        jwt = jwtFromCookie;
+ 	    else if (jwtFromHeader != null)
+ 	        jwt = jwtFromHeader;
+
+ 	    if (jwt == null && jwtFromCookie == null && jwt == null) {
+ 	        log.info("No auth available");
+ 	        return Mono.just("login");
+ 	    }
+
+ 	    log.info("JPOST WT in patient controller /delete/{id} : {}", jwt);
+ 	    return webClient.delete()
+ 	            .uri("/patients/" + id)
+ 	            .header("Authorization", "Bearer " + jwt)
+ 	            .cookie("JWT", jwt)
+ 	            .retrieve()
+ 	            .bodyToMono(PatientDto[].class)
+ 	            .map(patients -> {
+                    model.addAttribute("patients", patients);
+                    return "index";
+ 	            })
+ 	            .onErrorResume(e -> {
+ 	                log.error("Erreur lors de la récupération du patient", e);
+ 	               return webClient.get()
+ 	       	            .uri("/patients")
+ 	       	            .header("Authorization", request.getHeader("Authorization"))
+ 	       	            .cookie("JWT", request.getHeader("Authorization").replace("Bearer ", ""))
+ 	       	            .retrieve()
+ 	       	            .bodyToMono(PatientDto[].class)
+ 	       	            .map(patients -> {
+ 	                          model.addAttribute("patients", patients);
+ 	                          return "index";
+ 	       	            });
+ 	            });
+
+    }
+    
+    // Sauvegarde ou mise à jour du patient
+    @PostMapping("/save")
+    public Mono<String> savePatient(@ModelAttribute PatientDto patientDto, Model model,  HttpServletRequest request) {
+    	
+    	String jwtFromHeader = null;
+ 	    String jwtFromCookie = null;
+ 	    String jwt = null;
+
+ 	    if (request.getHeader("Authorization") != null)
+ 	        jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
+
+ 	    Cookie[] cookies = request.getCookies();
+ 	    for (Cookie cookie: cookies) {
+ 	        if (cookie.getName().equals("JWT")) {
+ 	            jwtFromCookie = cookie.getValue();
+ 	        }
+ 	    }
+ 	    log.info("JWT from Header: {}", jwtFromHeader);
+ 	    log.info("JWT from Cookie: {}", jwtFromCookie);
+ 	    if (jwtFromCookie != null)
+ 	        jwt = jwtFromCookie;
+ 	    else if (jwtFromHeader != null)
+ 	        jwt = jwtFromHeader;
+
+ 	    if (jwt == null && jwtFromCookie == null && jwt == null) {
+ 	        log.info("No auth available");
+ 	        return Mono.just("login");
+ 	    }
+
+ 	    log.info("JPOST WT in patient controller /save/{id} : {}", jwt);
+ 	    return webClient.post()
+ 	            .uri("/patients")
+                .bodyValue(patientDto)
+ 	            .header("Authorization", "Bearer " + jwt)
+ 	            .cookie("JWT", jwt)
+ 	            .retrieve()
+ 	            .bodyToMono(PatientDto[].class)
+ 	            .map(patients -> {
+                    model.addAttribute("patients", patients);
+                    return "index";
+ 	            })
+ 	            .onErrorResume(e -> {
+ 	                log.error("Erreur lors de la récupération du patient", e);
+	 	               model.addAttribute("patient", new PatientDto());
+	 	              return Mono.just("patient-form");
+ 	            });
 
     }
     
