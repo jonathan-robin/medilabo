@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-@Slf4j
 public class NoteServiceApplication implements ApplicationRunner {
 	
 	private final NoteService noteService;
@@ -33,9 +32,7 @@ public class NoteServiceApplication implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 		try {
 			Resource jsonData = new ClassPathResource(jsonFile);
-			log.info("Json data: {}", jsonData);
 			InputStream jsonStream = jsonData.getInputStream();
-			log.info("jsonStream: {}", jsonStream);
 			noteService.importAll(jsonStream);
 		} catch (IOException e) {
 			e.printStackTrace();

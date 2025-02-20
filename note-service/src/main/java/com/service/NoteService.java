@@ -52,7 +52,6 @@ public class NoteService {
     public Mono<List<Note>> saveNote(Note note) {
     	log.info("Saving note with...");
     	return noteRepo.save(note).flatMap(n -> noteRepo.findByPatientId(note.getPatientId()).collectList());
-//    	return noteRepo.findByPatientId(note.getPatientId()).collectList();
     }
     
     public Mono<Void> deleteNote(String id){ 
@@ -65,16 +64,15 @@ public class NoteService {
     	return noteRepo.findByPatientId(id);
     }
     
-    // Met à jour la note
     public Mono<Note> updateNote(String content, String id) {
         log.info("Updating note with id {} with new comment {}", id, content);
         return noteRepo.findById(id)
             .flatMap(note -> {
                 note.setContent(content);
                 note.setLastUpdatedAt(LocalDateTime.now());
-                return noteRepo.save(note);  // Sauvegarde la note mise à jour
+                return noteRepo.save(note);
             })
-            .switchIfEmpty(Mono.error(new RuntimeException("Note not found")));  // Gérer le cas où la note n'est pas trouvée
+            .switchIfEmpty(Mono.error(new RuntimeException("Note not found")));
     }
 
 
