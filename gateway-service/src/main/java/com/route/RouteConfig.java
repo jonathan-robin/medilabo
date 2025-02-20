@@ -35,6 +35,10 @@ public class RouteConfig {
                               .and()
                               .method(HttpMethod.POST)
                               .uri("http://localhost:8084/login"))
+                              
+                              .route("notes", r -> r.path("/notes/**")
+                            		  .uri("http://localhost:8083/notes"))	  
+                              
                                .build();
                 
                 

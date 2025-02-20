@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.dto.NoteDto;
 import com.dto.PatientDto;
 import com.model.Credentials;
 
@@ -23,6 +24,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Controller
@@ -131,24 +133,49 @@ public class PatientController {
     		log.info("No auth available");
     		return Mono.just("login");
     	}
+    	 final String _jwt = jwt;
+   	    return webClient.get()
+	            .uri("/patients/" + id)
+	            .header("Authorization", "Bearer " + jwt)
+	            .cookie("JWT", jwt)
+	            .retrieve()
+	            .bodyToMono(PatientDto.class)
+	            .flatMap(patient -> {
+	            	return webClient.get()
+		            	.uri("/notes/patient/"+id)
+		            	.header("Authorization", "Bearer " + _jwt)
+	    	            .cookie("JWT", _jwt)
+	    	            .retrieve()
+	    	            .bodyToFlux(NoteDto.class)
+	    	            .collectList()
+	    	            .doOnNext(notes -> log.info("Détails note : {}", notes.toString()))
+	    	            .map(notes -> {
+	    	            	log.info("Note: {}", notes);
+	    	            	Arrays.asList(notes).forEach(n -> log.info("Note{} :", n.toString()));
+	    	            	model.addAttribute("patient", patient);
+	    	            	model.addAttribute("notes", notes);
+	    	            	return "patient-details";
+	    	            });
+	            });
+    	
 
-    	    log.info("JWT in patient controller /id : {}",jwt);
-    	    return webClient.get()
-    	            .uri("/patients/" + id)
-    	            .header("Authorization", "Bearer " + jwt)
-    	            .cookie("JWT", jwt)
-    	            .retrieve()
-    	            .bodyToMono(PatientDto.class)
-    	            .doOnNext(patient -> log.info("Détails patient : {}", patient))
-    	            .map(patient -> {
-    	                model.addAttribute("patient", patient);
-    	                return "patient-details";
-    	            })
-    	            .onErrorResume(e -> {
-    	                log.error("Erreur lors de la récupération du patient", e);
-    	                model.addAttribute("userCredential", new Credentials());
-    	                return Mono.just("redirect:/login");
-    	            });
+//    	    log.info("JWT in patient controller /id : {}",jwt);
+//    	    return webClient.get()
+//    	            .uri("/patients/" + id)
+//    	            .header("Authorization", "Bearer " + jwt)
+//    	            .cookie("JWT", jwt)
+//    	            .retrieve()
+//    	            .bodyToMono(PatientDto.class)
+//    	            .doOnNext(patient -> log.info("Détails patient : {}", patient))
+//    	            .map(patient -> {
+//    	                model.addAttribute("patient", patient);
+//    	                return "patient-details";
+//    	            })
+//    	            .onErrorResume(e -> {
+//    	                log.error("Erreur lors de la récupération du patient", e);
+//    	                model.addAttribute("userCredential", new Credentials());
+//    	                return Mono.just("redirect:/login");
+//    	            });
     }
 
     @GetMapping("/new")
@@ -159,7 +186,7 @@ public class PatientController {
     
     
     @GetMapping("edit/{id}")
-    public Mono<String> showUpdatetForm(@PathVariable Long id, Model model, HttpServletRequest request) {
+    public Mono<String> showUpdateForm(@PathVariable Long id, Model model, HttpServletRequest request, HttpServletResponse response) {
 
     	    String jwtFromHeader = null;
     	    String jwtFromCookie = null;
@@ -186,23 +213,73 @@ public class PatientController {
     	        return Mono.just("login");
     	    }
 
-    	    log.info("JWT in patient controller /edit/{id} : {}", jwt);
+    	    final String _jwt = jwt;
+    	    
     	    return webClient.get()
-    	            .uri("/patients/" + id)
-    	            .header("Authorization", "Bearer " + jwt)
-    	            .cookie("JWT", jwt)
-    	            .retrieve()
-    	            .bodyToMono(PatientDto.class)
-    	            .doOnNext(patient -> log.info("Détails patient : {}", patient))
-    	            .map(patient -> {
-    	                model.addAttribute("patient", patient);
-    	                return "patient-edit-form";  // Nom du formulaire d'édition
-    	            })
-    	            .onErrorResume(e -> {
-    	                log.error("Erreur lors de la récupération du patient", e);
-    	                model.addAttribute("userCredential", new Credentials());
-    	                return Mono.just("redirect:/login");
-    	            });
+	            .uri("/patients/" + id)
+	            .header("Authorization", "Bearer " + jwt)
+	            .cookie("JWT", jwt)
+	            .retrieve()
+	            .bodyToMono(PatientDto.class)
+	            .flatMap(patient -> {
+	            	return webClient.get()
+		            	.uri("/notes/patient/"+id)
+		            	.header("Authorization", "Bearer " + _jwt)
+	    	            .cookie("JWT", _jwt)
+	    	            .retrieve()
+	    	            .bodyToFlux(NoteDto.class)
+	    	            .collectList()
+	    	            .doOnNext(notes -> log.info("Détails note : {}", notes.toString()))
+	    	            .map(notes -> {
+	    	            	
+	    	            	log.info("Note: {}", notes);
+	    	            	Arrays.asList(notes).forEach(n -> log.info("Note{} :", n.toString()));
+	    	            	model.addAttribute("patient", patient);
+	    	            	model.addAttribute("notes", notes);
+	    	            	return "patient-edit-form";
+	    	            });
+	            });
+//            .subscribe(successCallback::accept);
+    	    
+    	    
+    	    
+//    	    log.info("JWT in patient controller /edit/{id} : {}", jwt);
+//    	    return webClient.get()
+//    	            .uri("/patients/" + id)
+//    	            .header("Authorization", "Bearer " + jwt)
+//    	            .cookie("JWT", jwt)
+//    	            .retrieve()
+//    	            .bodyToMono(PatientDto.class)
+//    	            .doOnNext(patient -> log.info("Détails patient : {}", patient))
+//    	            .map(patient -> {
+//                        response.addCookie(new Cookie("JWT", request.getHeader("Authorization").replace("Bearer ", ""))); 
+//                        response.addHeader("Authorization", request.getHeader("Authorization"));
+//    	            	model.addAttribute("patient", patient);
+//    	            	
+//    	            	return webClient.get()
+//    	            	.uri("/notes/patient/"+id)
+//    	            	.header("Authorization", "Bearer " + request.getHeader("Authorization"))
+//        	            .cookie("JWT", request.getHeader("Authorization").replace("Bearer ", ""))
+//        	            .retrieve()
+//        	            .bodyToMono(NoteDto.class)
+//        	            .doOnNext(note -> log.info("Détails note : {}", note))
+//        	            .map(note -> {
+//        	            	
+//        	            	model.addAttribute("note", note);
+//        	            	return "patient-details";
+//        	            	
+//        	            })
+//        	            .onErrorResume(e -> {
+//        	                log.error("Erreur lors de la récupération de la note", e);
+//        	                model.addAttribute("userCredential", new Credentials());
+//        	                return Mono.just("redirect:/login");
+//        	            });   
+//    	            })
+//    	            .onErrorResume(e -> {
+//    	                log.error("Erreur lors de la récupération du patient", e);
+//    	                model.addAttribute("userCredential", new Credentials());
+//    	                return Mono.just(Mono.just("redirect:/login"));
+//    	            });
 
     }
     

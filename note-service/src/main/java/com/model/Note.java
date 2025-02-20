@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.dto.PatientDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +30,6 @@ public class Note {
 
     private String content;
     
-    private PatientDto patient;
+    private String patientId;
 
 }

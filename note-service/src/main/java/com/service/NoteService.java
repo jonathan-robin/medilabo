@@ -2,11 +2,13 @@ package com.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
+
 
 import com.dto.NoteDto;
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.Note;
 import com.repository.NoteRepository;
+
 
 import org.modelmapper.ModelMapper;
 
@@ -39,7 +42,7 @@ public class NoteService {
     }
     
     public Mono<Note> findById(String id) { 
-    	return noteRepo.findById(id.toString());
+    	return noteRepo.findById(id);
     }
     
     public Mono<Note> updateNote(Note note){
@@ -54,22 +57,20 @@ public class NoteService {
     	return noteRepo.deleteById(id);
     }
     
-    
-    
-    
-    
-    
-    
+    public Flux<Note> findByPatientId(String id){ 
+    	return noteRepo.findByPatientId(id);
+    }
+
     
 	
     /*********** Import note from json file ***********/
     public void importAll(InputStream jsonStream) throws StreamReadException, DatabindException, IOException {
 
-    	objectMapper.readValue(jsonStream, new TypeReference<List<NoteDto>>(){})
-			.stream().forEach(note -> {
-				log.info("Saving note ...{}");
-				saveNote(modelMapper.map(note, Note.class)).subscribe();
-			});
+//    	objectMapper.readValue(jsonStream, new TypeReference<List<NoteDto>>(){})
+//			.stream().forEach(note -> {
+//				log.info("Saving note ...{}");
+//				saveNote(modelMapper.map(note, Note.class)).subscribe();
+//			});
     }
     
 

@@ -44,9 +44,21 @@
         </div>
 
         <div>
-            <button type="submit">Sauvegarder</button>
+            <button type="submit">Sauvegarder patient</button>
             <a href="#" th:href="@{/patients/{id}(id=${patient.id})}">Annuler</a>
         </div>
     </form>
+    
+    <div th:each="note : ${notes}">
+	    <input type="hidden" th:value="${note.id}" />
+	
+	    <label>Content:</label>
+	    <input type="text" th:value="${note.content}" required />
+	
+	    <label>Date:</label>
+	    <input type="text" th:value="${note.date}" required />
+	</div>
+
+	    
 </body>
 </html>

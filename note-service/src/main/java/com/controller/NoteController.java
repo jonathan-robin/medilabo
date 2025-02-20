@@ -1,6 +1,10 @@
 package com.controller;
 
+
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +19,14 @@ import com.model.Note;
 import com.service.NoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping(value = "/notes")
 public class NoteController {
 
@@ -33,8 +39,13 @@ public class NoteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mono<Note>> findById(@PathVariable("id") String id) {
-        return ResponseEntity.ok(noteService.findById(id)); 
+    public Mono<ResponseEntity<Note>> findById(@PathVariable("id") String id) {
+        return noteService.findById(id)
+        .map(note -> new ResponseEntity<Note>(modelMapper.map(note, Note.class), HttpStatus.FOUND))
+        .switchIfEmpty(Mono.error(new Exception("No note found")));
+        
+        
+//        .switchIfEmpty(Mono.error(new NoteNotFoundException(messageSource.getMessage(NOT_FOUND, new Object[] {id}, Locale.ENGLISH))));
     }
 
     @PostMapping
@@ -53,6 +64,12 @@ public class NoteController {
 
     }
 
-   
+    @GetMapping("/patient/{id}")
+    public Flux<Note> findByPatientId(@PathVariable("id") String id) {
+    	log.info("CALL /patient/id with id : {}", id);
+    	return noteService.findByPatientId(id);
+//                .map(note -> modelMapper.map(note, NoteDto.class));
+
+    }
 
 }
