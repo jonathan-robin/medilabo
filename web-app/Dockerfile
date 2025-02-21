@@ -1,43 +1,32 @@
-# Étape 1 : Utilisation de l'image Maven pour construire le projet
+# Étape 1 : Construction de l'application avec Maven
 FROM maven:3.8.5-openjdk-11-slim AS build
 
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Étape 2 : Installer Maven
-RUN apt-get update && \
-    apt-get install -y wget && \
-    wget https://downloads.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz && \
-    tar -xvf apache-maven-3.8.6-bin.tar.gz && \
-    mv apache-maven-3.8.6 /opt/maven && \
-    ln -s /opt/maven/bin/mvn /usr/bin/mvn
-
-# Étape 3 : Définir la variable d'environnement MAVEN_HOME
-ENV MAVEN_HOME=/opt/maven
-ENV PATH=${MAVEN_HOME}/bin:${PATH}
-
-# Étape 4 : Copier le fichier pom.xml
-WORKDIR /app
+# Copier le fichier pom.xml pour télécharger les dépendances
 COPY pom.xml .
 
-# Étape 5 : Télécharger les dépendances Maven
+# Télécharger les dépendances Maven et les mettre en cache
 RUN mvn dependency:go-offline
 
-# Étape 6 : Copier le code source du projet
-COPY src /app/src
+# Copier tout le code source
+COPY src ./src
 
-# Étape 7 : Construire l'application
+# Compiler et empaqueter l'application
 RUN mvn clean package -DskipTests
 
-# Étape 8 : Utiliser une image JRE pour l'exécution
+# Étape 2 : Utilisation de l'image JRE pour exécuter l'application
 FROM openjdk:11-jre-slim
 
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier le fichier jar généré depuis la première étape
-COPY --from=0 /app/target/web-app.jar /app/web-app.jar
+# Copier le fichier JAR généré dans l'image
+COPY --from=build /app/target/web-app.jar /app/web-app.jar
 
 # Exposer le port de l'application
 EXPOSE 8082
 
-# Commande pour démarrer l'application
-CMD ["java", "-jar", "/app/web-app.jar"]
+# Lancer l'application
+ENTRYPOINT ["java", "-jar", "/app/web-app.jar"]
