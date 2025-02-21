@@ -15,7 +15,6 @@ import com.enums.Risk;
 public class PatientRiskDto {
 
     private String patientId; 
-    private Map<String, Integer> triggers;
     private Risk risk;
     private Integer count;
 }

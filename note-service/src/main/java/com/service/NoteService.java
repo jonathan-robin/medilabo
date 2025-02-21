@@ -88,8 +88,8 @@ public class NoteService {
 
     /*****************************************************/
 	
-    public Mono<PatientRiskDto> computeTriggers(Long patientId, List<String> triggers) {
-        return noteRepo.computeTriggers(patientId, triggers);
+    public Mono<PatientRiskDto> computeTriggers(Long patientId, String regex) {
+        return noteRepo.computeTriggers(patientId, regex);
     }
     
 	

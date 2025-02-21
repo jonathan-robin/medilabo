@@ -1,5 +1,7 @@
 package com.controller;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -72,8 +74,23 @@ public class NoteController {
     }
     
     @PostMapping("/triggers/{patientId}")
-    public ResponseEntity<Mono<PatientRiskDto>> computeTriggers(@PathVariable("patientId") Long patientId, @RequestBody List<String> triggers) {
-    	return ResponseEntity.ok(noteService.computeTriggers(patientId, triggers));
+   
+    public ResponseEntity<Mono<PatientRiskDto>> computeTriggers(@PathVariable("patientId") Long patientId, @RequestBody(required = true) List<String> triggers) {
+    	 log.info("Reçu triggers pour patient {}: {}", patientId, triggers);
+    	 if (triggers == null || triggers.isEmpty()) {
+    	        log.error("La liste des triggers est vide !");
+    	    }else {
+    	    	
+    	    	String regex = triggers.stream()
+    	    			.map(Pattern::quote)
+    	    			.collect(Collectors.joining("|")); // Générer la regex
+    	    	log.info("Regex construite : {}", regex);
+    	    	
+//    	    Mono<PatientRiskDto> result = noteRepository.computeTriggers(patientId, regex, triggers);
+    	    	
+    	    	return ResponseEntity.ok(noteService.computeTriggers(patientId, regex));
+    	    }
+    	 return ResponseEntity.ok(Mono.empty());
 //                .map(sum -> modelMapper.map(sum, SumTermTriggersDto.class)));
     }
 

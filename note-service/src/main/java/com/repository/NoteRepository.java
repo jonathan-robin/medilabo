@@ -17,16 +17,15 @@ public interface NoteRepository extends ReactiveMongoRepository<Note, String> {
     
 	 public Flux<Note> findByPatientId(String id);
 	 
-	 @Aggregation(pipeline = {
-			    "{$match: {'patient._id': ?0}}",
-			    "{$addFields: {termsTrigger: {$regexFindAll: {input: '$content', regex: ?1, options: 'i'}}}}",
-			    "{$set: {termsTrigger: {$map: {input: '$termsTrigger.match', in: {$toLower: '$$this'}}}}}",
-			    "{$unwind: {path: '$termsTrigger', includeArrayIndex: 'string', preserveNullAndEmptyArrays: true}}",
-			    "{$group: { _id: '$patient._id', termsTrigger: { $addToSet: '$termsTrigger' }}}",
-			    "{$project: { count: { $size: '$termsTrigger' }, triggers: { $arrayToObject: { $map: { input: ?2, as: 'trigger', in: { k: '$$trigger', v: { $cond: [ { $in: ['$$trigger', '$termsTrigger'] }, 1, 0 ] } } } } } }}}"
-			})
-			Mono<PatientRiskDto> computeTriggers(Long patientId, List<String> triggers);
-
+		@Aggregation(pipeline = {
+				"{$addFields: {termsTrigger: {$regexFindAll: {input: '$content',regex:?1,options: 'i'}}}}",
+	            "{$set: { termsTrigger: { $map: { input: '$termsTrigger.match', in: { $toLower: '$$this'}}}}}",
+	            "{$unwind: {path: '$termsTrigger', includeArrayIndex: 'string',preserveNullAndEmptyArrays: true}}",
+	            "{$group: { _id: '$patient._id', termsTrigger: { $addToSet: '$termsTrigger'}}}",
+	            "{ $project: { sumTermTriggers: { $size: '$termsTrigger'}}}}"})
+			Mono<PatientRiskDto> computeTriggers(Long patientId, String regex);
+		
+		
 
 	
 }
