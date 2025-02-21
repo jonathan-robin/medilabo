@@ -19,23 +19,22 @@ public class RouteConfig {
         @Bean
         public RouteLocator gatewayRoutes(RouteLocatorBuilder builder, HeaderFilter authorizationHeaderFilter) {
   	
-        		return builder.routes()
-        				.route("auth", r -> r.path("/login")
-        						.and()
-        						.method(HttpMethod.POST)
-        						.uri("http://localhost:8084/login"))
-        				
-                        .route("patient-service", r -> r.path("/patients", "/patients/**")
-                            .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
-                            .uri("http://localhost:8081/patients")) 
-                          .route("note-route", r -> r.path("/notes", "/notes/**")
-                    		  .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
-                    		  .uri("http://localhost:8083/notes"))	  
-				            .route("diabetes", r -> r.path("/diabetes", "/diabetes/**")
-			            	  .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
-			          		  .uri("http://localhost:8085/diabetes"))	  
-				             .build();
-                
+    		return builder.routes()
+    				.route("auth", r -> r.path("/login")
+						.and()
+						.method(HttpMethod.POST)
+						.uri("http://localhost:8084/login"))
+                    .route("patient-service", r -> r.path("/patients", "/patients/**")
+                        .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
+                        .uri("http://localhost:8081/patients")) 
+                    .route("note-route", r -> r.path("/notes", "/notes/**")
+	            		  .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
+	            		  .uri("http://localhost:8083/notes"))	  
+			        .route("diabetes", r -> r.path("/diabetes", "/diabetes/**")
+		            	  .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
+		          		  .uri("http://localhost:8085/diabetes"))	  
+			        .build();
+            
                 
         }
 

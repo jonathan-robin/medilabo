@@ -21,8 +21,6 @@ public class PostFilter implements GlobalFilter, Ordered {
 
             HttpHeaders headers = exchange.getRequest().getHeaders();
             String jwt = headers.getFirst(HttpHeaders.AUTHORIZATION);
-            
-            log.info("jwt in gateway svc: {}", jwt);
 
             if (jwt != null && jwt.startsWith("Bearer ")) {
                 String token = jwt.substring(7); // Retire "Bearer "
@@ -31,7 +29,6 @@ public class PostFilter implements GlobalFilter, Ordered {
             exchange.getResponse().getHeaders().add("Authorization", "Bearer "+token);
             
             }
-
         }));
     }
 

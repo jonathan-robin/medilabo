@@ -28,9 +28,7 @@ public class HeaderFilter extends AbstractGatewayFilterFactory<HeaderFilter.Conf
     }
 
     public static class Config {
-    	/* custom modification could be add here 
-    	 * maybe crypt jwtSecret with custom secret - add more security */
-//    	private String jwtSecret;
+
     }
  
     @Override
@@ -77,11 +75,6 @@ public class HeaderFilter extends AbstractGatewayFilterFactory<HeaderFilter.Conf
                     .parseClaimsJws(jwt)  
                     .getBody(); 
 
-            
-            log.info("claims: {}",claims );
-            log.info("claims != null: {}",claims != null );
-            log.info("laims.get(\"jti\") != null: {}",claims.get("jti") != null );
-            
             return claims != null;
         } catch (Exception e) {
         	log.info("jwt={}, exception={}",jwt, e);
