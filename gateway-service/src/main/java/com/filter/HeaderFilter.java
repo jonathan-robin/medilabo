@@ -1,25 +1,19 @@
 package com.filter;
 
 import java.util.Base64;
-import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.server.ServerWebExchange;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 //import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -28,18 +22,15 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class HeaderFilter extends AbstractGatewayFilterFactory<HeaderFilter.Config> {
 
-    private final Environment environment;
 
-    @Autowired
-    public HeaderFilter(Environment environment) {
+    public HeaderFilter() {
         super(Config.class);
-        this.environment = environment;
     }
 
     public static class Config {
     	/* custom modification could be add here 
     	 * maybe crypt jwtSecret with custom secret - add more security */
-    	private String jwtSecret;
+//    	private String jwtSecret;
     }
  
     @Override
@@ -72,7 +63,7 @@ public class HeaderFilter extends AbstractGatewayFilterFactory<HeaderFilter.Conf
     }
 
     private boolean isJwtValid(String jwt) {
-        String tokenSecret = environment.getProperty("token.secret.key");
+        String tokenSecret = "7DA2220C0016000C0047BB08F1F84BCD208F369A45AE16D5CC27E464FCE388A0";
         byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
         var secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
         

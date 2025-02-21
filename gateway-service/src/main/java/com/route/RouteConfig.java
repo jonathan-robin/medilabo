@@ -19,32 +19,22 @@ public class RouteConfig {
         @Bean
         public RouteLocator gatewayRoutes(RouteLocatorBuilder builder, HeaderFilter authorizationHeaderFilter) {
   	
-        	log.info("***************************** Route config call **************************************");
         		return builder.routes()
-                                .route("patient-service", r -> r.path("/patients")
-	                                .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
-	                                .uri("http://localhost:8081/patients"))
-                                
-                                /* work well but auth is handle by gateway try to make a dedicated ms */
-//                                .route("auth", r -> r.path("/login")
-//                                        .and()
-//                                        .method(HttpMethod.POST)
-//                                        .uri("http://localhost:8080/login"))
-                                
-                              .route("auth", r -> r.path("/login")
-                              .and()
-                              .method(HttpMethod.POST)
-                              .uri("http://localhost:8084/login"))
-                              
-                              .route("notes", r -> r.path("/notes/**")
-                            		  .uri("http://localhost:8083/notes"))	  
-                              
-                               
-        		
-					            .route("diabetes", r -> r.path("/diabetes/**")
-					          		  .uri("http://localhost:8085/diabetes"))	  
-					            
-					             .build();
+        				.route("auth", r -> r.path("/login")
+        						.and()
+        						.method(HttpMethod.POST)
+        						.uri("http://localhost:8084/login"))
+        				
+                        .route("patient-service", r -> r.path("/patients", "/patients/**")
+                            .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
+                            .uri("http://localhost:8081/patients")) 
+                          .route("note-route", r -> r.path("/notes", "/notes/**")
+                    		  .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
+                    		  .uri("http://localhost:8083/notes"))	  
+				            .route("diabetes", r -> r.path("/diabetes", "/diabetes/**")
+			            	  .filters(f -> f.filter(authorizationHeaderFilter.apply(new Config()), 1))
+			          		  .uri("http://localhost:8085/diabetes"))	  
+				             .build();
                 
                 
         }

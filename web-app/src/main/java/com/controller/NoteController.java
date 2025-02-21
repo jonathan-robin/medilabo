@@ -19,6 +19,7 @@ import com.dto.NoteDto;
 import com.dto.PatientDto;
 import com.dto.PatientRiskDto;
 import com.model.Credentials;
+import com.service.CookieService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,10 +33,12 @@ import reactor.core.publisher.Mono;
 public class NoteController {
 
     private final WebClient webClient;
+    private final CookieService cookieService;
 
     @Autowired
-    public NoteController(WebClient webClient) {
+    public NoteController(WebClient webClient, CookieService cookieService) {
         this.webClient = webClient;
+        this.cookieService = cookieService;
     }
   
     
@@ -83,28 +86,10 @@ public class NoteController {
 	@PostMapping("/{patientId}/edit/{id}/")
     public Mono<String> editNote(@ModelAttribute("note") NoteDto noteDto, @PathVariable Integer patientId, @PathVariable String id, Model model, HttpServletRequest request) {
         
-    	log.info("note: {}", noteDto.toString());
-    	
-        String jwtFromHeader = null;
-        String jwtFromCookie = null;
-        String jwt = null;
-
-        if (request.getHeader("Authorization") != null)
-            jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
-
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("JWT")) {
-                jwtFromCookie = cookie.getValue();
-            }
-        }
-        
-        jwt = (jwtFromCookie != null) ? jwtFromCookie : jwtFromHeader;
-
-        if (jwt == null)
-            return Mono.just("redirect:/login");
-        
-        final String _jwt = jwt;
+   	 final String jwt = cookieService.getCookie(request);
+	 
+   	 if (jwt == null)
+   		 return Mono.just("/login");
         
         return webClient.get()
         	    .uri("/patients/" + patientId)
@@ -118,8 +103,8 @@ public class NoteController {
         	        return webClient.put()
         	            .uri("/notes/" + id)
         	            .bodyValue(noteDto.getContent())
-        	            .header("Authorization", "Bearer " + _jwt)
-        	            .cookie("JWT", _jwt)
+        	            .header("Authorization", "Bearer " + jwt)
+        	            .cookie("JWT", jwt)
         	            .retrieve()
         	            .bodyToMono(NoteDto.class)
         	            .flatMap(updatedNote -> {
@@ -128,8 +113,8 @@ public class NoteController {
         	                // 3ème requête : récupérer toutes les notes associées au patient
         	                return webClient.get()
         	                    .uri("/notes/patient/" + patientId)
-        	                    .header("Authorization", "Bearer " + _jwt)
-        	                    .cookie("JWT", _jwt)
+        	                    .header("Authorization", "Bearer " + jwt)
+        	                    .cookie("JWT", jwt)
         	                    .retrieve()
         	                    .bodyToFlux(NoteDto.class)
         	                    .collectList()  // Les collecter sous forme de liste
@@ -151,27 +136,32 @@ public class NoteController {
     @GetMapping("/{patientId}/delete/{id}")
     public Mono<String> deleteNote(@PathVariable String id, Model model, @PathVariable String patientId, HttpServletRequest request) {
     	
+
+   	 final String jwt = cookieService.getCookie(request);
+	 
+   	 if (jwt == null)
+   		 return Mono.just("/login");
     	
-        String jwtFromHeader = null;
-        String jwtFromCookie = null;
-        String jwt = null;
-
-        if (request.getHeader("Authorization") != null)
-            jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
-
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("JWT")) {
-                jwtFromCookie = cookie.getValue();
-            }
-        }
-        
-        jwt = (jwtFromCookie != null) ? jwtFromCookie : jwtFromHeader;
-
-        if (jwt == null)
-            return Mono.just("redirect:/login");
-        
-        final String _jwt = jwt;
+//        String jwtFromHeader = null;
+//        String jwtFromCookie = null;
+//        String jwt = null;
+//
+//        if (request.getHeader("Authorization") != null)
+//            jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
+//
+//        Cookie[] cookies = request.getCookies();
+//        for (Cookie cookie : cookies) {
+//            if (cookie.getName().equals("JWT")) {
+//                jwtFromCookie = cookie.getValue();
+//            }
+//        }
+//        
+//        jwt = (jwtFromCookie != null) ? jwtFromCookie : jwtFromHeader;
+//
+//        if (jwt == null)
+//            return Mono.just("redirect:/login");
+//        
+//        final String _jwt = jwt;
 
  	   return webClient.delete()
  		        .uri("/notes/" + id)
@@ -189,8 +179,8 @@ public class NoteController {
  		                    .flatMap(patient -> {
  		                        return webClient.get()
  		                                .uri("/notes/patient/" + patientId)
- 		                                .header("Authorization", "Bearer " + _jwt)
- 		                                .cookie("JWT", _jwt)
+ 		                                .header("Authorization", "Bearer " + jwt)
+ 		                                .cookie("JWT", jwt)
  		                                .retrieve()
  		                                .bodyToFlux(NoteDto.class)
  		                                .collectList() 
@@ -225,34 +215,11 @@ public class NoteController {
     @PostMapping("/{patientId}")
     public Mono<String> saveNote(@PathVariable("patientId") String patientId, @ModelAttribute("note") NoteDto noteDto, Model model, HttpServletRequest request) {
     	
-    	log.info("note: {}", noteDto);
-    	
-    	  String jwtFromHeader = null;
-          String jwtFromCookie = null;
-          String jwt = null;
-
-          if (request.getHeader("Authorization") != null)
-              jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
-
-          Cookie[] cookies = request.getCookies();
-          for (Cookie cookie : cookies) {
-              if (cookie.getName().equals("JWT")) {
-                  jwtFromCookie = cookie.getValue();
-              }
-          }
-          
-          jwt = (jwtFromCookie != null) ? jwtFromCookie : jwtFromHeader;
-
-          if (jwt == null)
-              return Mono.just("redirect:/login");
-          
-          final String _jwt = jwt;
-
-          /******************************************************************/
-          /******************************************************************/
-          /********************* TODO ***********************************/
-          /*
-           */
+    	 final String jwt = cookieService.getCookie(request);
+    	 
+    	 if (jwt == null)
+    		 return Mono.just("/login");
+    	 
    	    return webClient.post()
    	            .uri("/notes")
                 .bodyValue(noteDto)
@@ -263,8 +230,8 @@ public class NoteController {
    	            .flatMap(notes -> {
    	            	return webClient.get()
     	                    .uri("patients/" + patientId)
-    	                    .header("Authorization", "Bearer " + _jwt)
-    	                    .cookie("JWT", _jwt)
+    	                    .header("Authorization", "Bearer " + jwt)
+    	                    .cookie("JWT", jwt)
     	                    .retrieve()
     	                    .bodyToMono(PatientDto.class)
     	                    .zipWith(Mono.just(notes));
@@ -280,11 +247,8 @@ public class NoteController {
   	 	               model.addAttribute("note", new NoteDto());
   	 	              return Mono.just("notes/edit-form");
    	            });
-   	 /******************************************************************/
-   	 /******************************************************************/
 
-    }
-
+    	}
     
 }
     

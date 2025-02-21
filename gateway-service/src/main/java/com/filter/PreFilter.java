@@ -16,16 +16,18 @@ public class PreFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     	
-    	if (exchange.getRequest().getURI().getPath().equals("/login")) {
+    	log.info("path: {}", exchange.getRequest().getURI().getPath());
+
+    	if (exchange.getRequest().getURI().getPath().equals("/login"))
     		return chain.filter(exchange);
-    	}
     	
         String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if ((exchange.getRequest().getURI().getPath().equals("/notes/patient/3" ))) {
+        	log.info("/NOTES/PATIENT/3{}", authorizationHeader);
+        }
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String jwtToken = authorizationHeader.substring(7);  
-
-            log.info("JWT Token found: {}", jwtToken);
 
             exchange = exchange.mutate()
                 .request(r -> r.headers(headers -> headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)))
@@ -39,6 +41,6 @@ public class PreFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return 0;  // Priorité du filtre, 0 étant le premier
+        return 0;  
     }
 }

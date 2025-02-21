@@ -1,4 +1,4 @@
-package com.filter;
+package com.config;
 
 import java.io.IOException;
 

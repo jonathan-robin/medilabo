@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dto.PatientRiskDto;
 import com.model.Note;
 import com.service.NoteService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,22 +62,33 @@ public class NoteController {
 
     }
     
-    
     @DeleteMapping("/{id}")
     public ResponseEntity<Mono<Void>> deleteNote(@PathVariable(value = "id") String id) {
         return ResponseEntity.ok(noteService.deleteNote(id));
     }
 
-    @SuppressWarnings("unchecked")
 	@GetMapping("/patient/{id}")
-    public Flux<Note> findByPatientId(@PathVariable("id") String id) {
-    	log.info("CALL /patient/id with id : {}", id);
+    public Flux<Note> findByPatientId(@PathVariable("id") String id, HttpServletRequest request, HttpServletResponse response) {
+    	
+		log.info("auth type : {}", request.getAuthType()); 
+		log.info("cokoie : {}", request.getCookies() != null); 
+		log.info("auth type : {}", request.getHeader("Authorization")); 
+		jakarta.servlet.http.Cookie cookie[] = request.getCookies();
+		for (jakarta.servlet.http.Cookie cook: cookie) {
+			if (cook.getName().equals("JWT")) { 
+				log.info("JWT found {}", cook.getValue());
+				String jwt = cook.getValue();
+				response.addCookie(new jakarta.servlet.http.Cookie("JWT", jwt));
+				response.addHeader("Authorization", "Bearer " + jwt);
+			}
+		}
+		
+		log.info("CALL /patient/id with id : {}", id);
     	return (Flux<Note>)noteService.findByPatientId(id);
 
     }
     
     @PostMapping("/triggers/{patientId}")
-   
     public ResponseEntity<Mono<PatientRiskDto>> computeTriggers(@PathVariable("patientId") Long patientId, @RequestBody(required = true) List<String> triggers) {
     	 log.info("Reçu triggers pour patient {}: {}", patientId, triggers);
     	 if (triggers == null || triggers.isEmpty()) {
@@ -85,13 +99,9 @@ public class NoteController {
     	    			.map(Pattern::quote)
     	    			.collect(Collectors.joining("|")); // Générer la regex
     	    	log.info("Regex construite : {}", regex);
-    	    	
-//    	    Mono<PatientRiskDto> result = noteRepository.computeTriggers(patientId, regex, triggers);
-    	    	
-    	    	return ResponseEntity.ok(noteService.computeTriggers(patientId, regex));
+	    	return ResponseEntity.ok(noteService.computeTriggers(patientId, regex));
     	    }
     	 return ResponseEntity.ok(Mono.empty());
-//                .map(sum -> modelMapper.map(sum, SumTermTriggersDto.class)));
     }
 
 

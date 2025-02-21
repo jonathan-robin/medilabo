@@ -55,6 +55,7 @@ public class DiabetesController {
         Mono<PatientRiskDto> risk = webClient.get()
             .uri("http://localhost:8080/patients/{id}", patientId)
             .header("Authorization", "Bearer " + jwtToken)  // Ajouter le JWT
+            .cookie("JWT", jwtToken)
             .retrieve()
             .bodyToMono(PatientDto.class)
             .flatMap(patient -> {
@@ -71,6 +72,7 @@ public class DiabetesController {
                 return webClient.post()
                     .uri("http://localhost:8080/notes/triggers/" + patientId)
                     .header("Authorization", "Bearer " + jwtToken)  // Ajouter le JWT
+                    .cookie("JWT", jwtToken)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(triggerList))
                     .retrieve()
