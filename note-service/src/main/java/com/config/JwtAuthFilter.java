@@ -23,17 +23,27 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private static final String JWT_COOKIE_NAME = "JWT";
+    private static final String ALLOWED_ORIGIN = "localhost:8080";
+    private static final String USER_AGENT = "ReactorNetty/1.1.0";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
     	
-        String requestURI = request.getRequestURI();
-        
-        /* redirect to auth-service */
-        if (requestURI.startsWith("/login") || requestURI.startsWith("/public") || requestURI.startsWith("/css") || requestURI.startsWith("/js") || requestURI.startsWith("/images")) {
-            filterChain.doFilter(request, response);
-            return;
+
+        String forwardedHost = request.getHeader("x-forwarded-host");
+        String userAgent = request.getHeader("user-agent");
+
+        // Vérifie si l'origine de la requête est la gateway
+        if (forwardedHost == null || !forwardedHost.equals(ALLOWED_ORIGIN)) {
+            if (userAgent == null || !userAgent.equals(USER_AGENT)) {
+            	log.info("forwardedHost : {}", forwardedHost);
+            	log.info("userAgent : {}", userAgent);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Unauthorized: Invalid Origin");
+                response.sendRedirect("/error");
+                return;
+            }
         }
         
         /* else if its first callback from auth-service and the jwt is correct save user in memory */ 
