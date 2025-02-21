@@ -8,7 +8,7 @@
   </parent>
   <artifactId>diabetes-service</artifactId>
   
-  
+
   <dependencies>
     <!-- Lombok dependency -->
     <dependency>

@@ -14,13 +14,13 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.SecurityContextRepository;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
  	private JwtAuthFilter jwtAuthFilter;
 
-     @Bean
+//     @Bean
      public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
      	
          http.csrf().disable()

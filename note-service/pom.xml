@@ -1,12 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com</groupId>
-    <artifactId>medilabo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+
   <artifactId>note-service</artifactId>
+  
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.5</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
   
   <dependencies>
 	  <dependency>
@@ -50,14 +52,6 @@
 			<scope>runtime</scope>
 		</dependency>
 	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -70,13 +64,7 @@
 		<dependency>
 		    <groupId>com.fasterxml.jackson.core</groupId>
 		    <artifactId>jackson-databind</artifactId>
-		    <version>2.15.0</version> <!-- Utilise la dernière version disponible -->
 		</dependency>
-	
-
-			
-		
-
 
     <!-- Spring WebFlux pour la programmation réactive -->
     <dependency>
@@ -98,26 +86,13 @@
 <dependency>
     <groupId>org.modelmapper</groupId>
     <artifactId>modelmapper</artifactId>
-    <version>3.1.0</version> <!-- Utilise la dernière version disponible -->
 </dependency>
 <dependency>
     <groupId>org.hibernate.validator</groupId>
     <artifactId>hibernate-validator</artifactId>
-    <version>8.0.0.Final</version> <!-- Utilise la version correspondante -->
 </dependency>
 
 
-	
-	</dependencies>
+		</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-  
-  
 </project>

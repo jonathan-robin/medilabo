@@ -16,7 +16,7 @@ public class AuthSecurityConfig {
         http
             .csrf().disable() 
             .authorizeRequests()
-            .antMatchers("/login", "/public/**") 
+            .requestMatchers("/login", "/public/**") 
             .permitAll()
             .anyRequest().authenticated();
         return http.build();
