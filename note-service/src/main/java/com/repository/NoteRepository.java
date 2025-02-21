@@ -1,7 +1,5 @@
 package com.repository;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
