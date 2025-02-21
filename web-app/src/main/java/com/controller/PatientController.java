@@ -120,7 +120,7 @@ public class PatientController {
                 });
     }
 
-    private Mono<String> getPatientRisk(String patientId, Model model, String jwt) {
+    public Mono<String> getPatientRisk(String patientId, Model model, String jwt) {
     	
 //    	String jwt = cookieService.getCookie(request);
     	

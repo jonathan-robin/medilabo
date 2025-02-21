@@ -44,6 +44,8 @@ public class NoteController {
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<Note>> findById(@PathVariable("id") String id) {
+		log.info("Call /id with {} - find by id ", id); 
+		log.info("Result:  {}", noteService.findById(id)); 
         return noteService.findById(id)
         .map(note -> new ResponseEntity<Note>(note, HttpStatus.FOUND))
         .switchIfEmpty(Mono.error(new Exception("No note found")));
@@ -51,13 +53,14 @@ public class NoteController {
 
     @PostMapping("")
     public ResponseEntity<Mono<List<Note>>> createNote(@Valid @RequestBody Note noteToCreate) {
-    	log.info("Call to controller create Note...");
-    	log.info("noteToCreate : {} {} {} {} {}", noteToCreate.getContent(), noteToCreate.getId(), noteToCreate.getCreatedAt(), noteToCreate.getLastUpdatedAt(), noteToCreate.getPatientId());
+    	log.info("Call POST / create Note : {} {} {} {} {}", noteToCreate.getContent(), noteToCreate.getId(), noteToCreate.getCreatedAt(), noteToCreate.getLastUpdatedAt(), noteToCreate.getPatientId());
         return ResponseEntity.ok(noteService.saveNote(modelMapper.map(noteToCreate, Note.class)));
     }
 
     @PutMapping("/{id}")
     public Mono<Note> updateNote(@Valid @RequestBody String content, @PathVariable("id") String id) {
+		log.info("Call PUT /id id {} - updateNote with {}", id, content); 
+		log.info("Result:  {}", noteService.findById(id)); 
         return noteService.updateNote(content, id);
 
     }
