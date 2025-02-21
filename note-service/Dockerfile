@@ -1,22 +1,7 @@
-# Étape 1 : Construction de l'application
-FROM maven:3.8.5-openjdk-11-slim AS build
-
-WORKDIR /app
-
-COPY pom.xml .
-COPY src ./src
-
-RUN mvn clean package -DskipTests
-
-
-# Étape 2 : Exécution de l'application
-FROM openjdk:11-jre-slim
-
-
-WORKDIR /app
-
-COPY --from=build /app/target/note-service.jar /app/note-service.jar
-
-EXPOSE 8083
-
-ENTRYPOINT ["java", "-jar", "note-service.jar"]
+FROM openjdk:17-alpine
+RUN apk add --no-cache curl
+LABEL application-name="note-service"
+VOLUME [ "/main-app" ]
+ADD target/note-service-0.0.1-SNAPSHOT.jar note-service.jar
+EXPOSE 8081
+ENTRYPOINT [ "java","-jar","/note-service.jar" ]

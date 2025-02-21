@@ -1,4 +1,5 @@
 package auth.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,11 +14,11 @@ public class AuthSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()  // Désactive CSRF si non nécessaire
+            .csrf().disable() 
             .authorizeRequests()
-            .requestMatchers("/login", "/public/**")  // Permet l'accès sans authentification pour ces chemins
+            .antMatchers("/login", "/public/**") 
             .permitAll()
-            .anyRequest().authenticated();  // Authentification requise pour toutes les autres requêtes
+            .anyRequest().authenticated();
         return http.build();
     }
 }
