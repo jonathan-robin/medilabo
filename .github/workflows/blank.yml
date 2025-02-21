@@ -67,38 +67,69 @@ jobs:
     - name: Run tests
       run: mvn test
 
-  push-images:
+
+  push:
     runs-on: ubuntu-latest
-    needs: test  # Cette étape dépend de l'étape "test"
-
+    needs: build
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Build Docker images for all services
-      run: |
-        docker build -t web-app ./web-app
-        docker build -t patient-service ./patient-service
-        docker build -t note-service ./note-service
-        docker build -t auth ./auth
-        docker build -t diabetes-service ./diabetes-service
-        docker build -t gateway-service ./gateway-service
-
-    - name: Push Docker images to Docker Hub (optional)
-      run: |
-        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-        docker tag web-app $DOCKER_USERNAME/web-app:latest
-        docker push $DOCKER_USERNAME/web-app:latest
-        docker tag patient-service $DOCKER_USERNAME/patient-service:latest
-        docker push $DOCKER_USERNAME/patient-service:latest
-        docker tag note-service $DOCKER_USERNAME/note-service:latest
-        docker push $DOCKER_USERNAME/note-service:latest
-        docker tag auth $DOCKER_USERNAME/auth:latest
-        docker push $DOCKER_USERNAME/auth:latest
-        docker tag diabetes-service $DOCKER_USERNAME/diabetes-service:latest
-        docker push $DOCKER_USERNAME/diabetes-service:latest
-        docker tag gateway-service $DOCKER_USERNAME/gateway-service:latest
-        docker push $DOCKER_USERNAME/gateway-service:latest
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      # Checkout le code source
+      - name: Checkout code
+        uses: actions/checkout@v2
+  
+      # Installer Maven et Java
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+  
+      # Construire tous les modules avec Maven
+      - name: Build all modules with Maven
+        run: mvn clean install -DskipTests=true
+  
+      # Vérifier si le fichier .jar a bien été généré dans target
+      - name: List target directory
+        run: ls -l target/
+  
+      # Construire l'image Docker pour web-app
+      - name: Build Docker image for web-app
+        run: |
+          cd web-app
+          docker build -t web-app-image .
+  
+      # Construire l'image Docker pour gateway-service
+      - name: Build Docker image for gateway-service
+        run: |
+          cd gateway-service
+          docker build -t gateway-service-image .
+  
+      # Construire l'image Docker pour patient-service
+      - name: Build Docker image for patient-service
+        run: |
+          cd patient-service
+          docker build -t patient-service-image .
+  
+      # Construire l'image Docker pour medilabo
+      - name: Build Docker image for medilabo
+        run: |
+          cd medilabo
+          docker build -t medilabo-image .
+  
+      - name: Push Docker images to Docker Hub (optional)
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker tag web-app $DOCKER_USERNAME/web-app:latest
+          docker push $DOCKER_USERNAME/web-app:latest
+          docker tag patient-service $DOCKER_USERNAME/patient-service:latest
+          docker push $DOCKER_USERNAME/patient-service:latest
+          docker tag note-service $DOCKER_USERNAME/note-service:latest
+          docker push $DOCKER_USERNAME/note-service:latest
+          docker tag auth $DOCKER_USERNAME/auth:latest
+          docker push $DOCKER_USERNAME/auth:latest
+          docker tag diabetes-service $DOCKER_USERNAME/diabetes-service:latest
+          docker push $DOCKER_USERNAME/diabetes-service:latest
+          docker tag gateway-service $DOCKER_USERNAME/gateway-service:latest
+          docker push $DOCKER_USERNAME/gateway-service:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
