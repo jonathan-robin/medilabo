@@ -33,19 +33,19 @@ public class JwtAuthFilter extends OncePerRequestFilter implements Ordered, Filt
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String forwardedHost = request.getHeader("x-forwarded-host");
-        String userAgent = request.getHeader("user-agent");
-
-        if (forwardedHost == null || !forwardedHost.equals(ALLOWED_ORIGIN)) {
-            if (userAgent == null || !userAgent.equals(USER_AGENT)) {
-            	log.info("forwardedHost : {}", forwardedHost);
-            	log.info("userAgent : {}", userAgent);
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Unauthorized: Invalid Origin");
-                response.sendRedirect("/error");
-                return;
-            }
-        }
+//        String forwardedHost = request.getHeader("x-forwarded-host");
+//        String userAgent = request.getHeader("user-agent");
+//
+//        if (forwardedHost == null || !forwardedHost.equals(ALLOWED_ORIGIN)) {
+//            if (userAgent == null || !userAgent.equals(USER_AGENT)) {
+//            	log.info("forwardedHost : {}", forwardedHost);
+//            	log.info("userAgent : {}", userAgent);
+//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                response.getWriter().write("Unauthorized: Invalid Origin");
+//                response.sendRedirect("/error");
+//                return;
+//            }
+//        }
         
 
         

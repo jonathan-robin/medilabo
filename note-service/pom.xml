@@ -86,6 +86,7 @@
 <dependency>
     <groupId>org.modelmapper</groupId>
     <artifactId>modelmapper</artifactId>
+    <version>3.1.0</version> <!-- Utilise la dernière version disponible -->
 </dependency>
 <dependency>
     <groupId>org.hibernate.validator</groupId>
