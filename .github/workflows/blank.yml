@@ -22,7 +22,7 @@ jobs:
         java-version: 17
         java-package: jdk
         architecture: x64
-        distribution: 'adoptopenjdk'
+        distribution: 'temurin'
         check-latest: false
         server-id: github
         server-username: GITHUB_ACTOR
