@@ -1,7 +1,8 @@
-package com.config;
+package com.filter;
 
 import java.io.IOException;
 
+import org.springframework.core.Ordered;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -10,6 +11,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -20,11 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class JwtAuthFilter extends OncePerRequestFilter {
+public class JwtAuthFilter extends OncePerRequestFilter implements Ordered, Filter {
 
     private static final String JWT_COOKIE_NAME = "JWT";
     private static final String ALLOWED_ORIGIN = "localhost:8080";
     private static final String USER_AGENT = "ReactorNetty/1.1.0";
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -43,6 +46,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
         }
+        
+
+        
         
         /* else if its first callback from auth-service and the jwt is correct save user in memory */ 
         String jwt = null;
@@ -91,4 +97,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+    
+    @Override
+    public int getOrder() {
+        return 0;  
+    }
+    
 }
