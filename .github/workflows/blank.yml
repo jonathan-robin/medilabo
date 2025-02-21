@@ -81,7 +81,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'adoptopenjdk'
+          distribution: 'temurin'
   
       # Construire tous les modules avec Maven
       - name: Build all modules with Maven
