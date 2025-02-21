@@ -13,6 +13,11 @@
         <java.version>17</java.version>
         <spring.boot.version>3.2.2</spring.boot.version>
     </properties>
+    <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.5.0</version> <!-- Adaptez la version si nécessaire -->
+</parent>
     <dependencies>
     <dependency>
         <groupId>org.springframework.boot</groupId>

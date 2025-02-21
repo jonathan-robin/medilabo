@@ -3,26 +3,41 @@ FROM maven:3.8.5-openjdk-11-slim AS build
 
 WORKDIR /app
 
-# Copier le fichier pom.xml et télécharger les dépendances Maven
+# Étape 2 : Installer Maven
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget https://downloads.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz && \
+    tar -xvf apache-maven-3.8.6-bin.tar.gz && \
+    mv apache-maven-3.8.6 /opt/maven && \
+    ln -s /opt/maven/bin/mvn /usr/bin/mvn
+
+# Étape 3 : Définir la variable d'environnement MAVEN_HOME
+ENV MAVEN_HOME=/opt/maven
+ENV PATH=${MAVEN_HOME}/bin:${PATH}
+
+# Étape 4 : Copier le fichier pom.xml
+WORKDIR /app
 COPY pom.xml .
+
+# Étape 5 : Télécharger les dépendances Maven
 RUN mvn dependency:go-offline
 
-# Copier tout le code source du projet
-COPY src ./src
+# Étape 6 : Copier le code source du projet
+COPY src /app/src
 
-# Construire l'application et générer le fichier .jar
+# Étape 7 : Construire l'application
 RUN mvn clean package -DskipTests
 
-# Étape 2 : Utilisation d'une image JRE pour exécuter l'application
-FROM openjdk:17-slim
+# Étape 8 : Utiliser une image JRE pour l'exécution
+FROM openjdk:11-jre-slim
 
 WORKDIR /app
 
-# Copier le fichier .jar généré depuis l'étape précédente
-COPY --from=build /app/target/web-app-*.jar web-app.jar
+# Copier le fichier jar généré depuis la première étape
+COPY --from=0 /app/target/web-app.jar /app/web-app.jar
 
-# Exposer le port 8082
+# Exposer le port de l'application
 EXPOSE 8082
 
-# Démarrer l'application Spring Boot
-CMD ["java", "-jar", "web-app.jar"]
+# Commande pour démarrer l'application
+CMD ["java", "-jar", "/app/web-app.jar"]
