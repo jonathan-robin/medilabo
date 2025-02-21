@@ -1,0 +1,26 @@
+# Étape 1 : Construction des fichiers statiques (si nécessaire)
+# Si tu utilises un framework comme React ou Angular, tu devras d'abord les construire
+FROM node:16 AS build
+
+WORKDIR /app
+
+# Copier les fichiers du projet (package.json, src, etc.)
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+# Construction de l'application
+RUN npm run build
+
+# Étape 2 : Serveur pour les fichiers statiques
+FROM nginx:alpine
+
+# Copie les fichiers construits dans le répertoire de Nginx
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Exposer le port 8082
+EXPOSE 8082
+
+# Commande pour démarrer Nginx
+CMD ["nginx", "-g", "daemon off;"]
