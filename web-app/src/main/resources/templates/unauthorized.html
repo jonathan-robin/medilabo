@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Accès interdit</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <h2>🚫 Accès interdit</h2>
+    <p th:text="${error} ?: 'Vous n'êtes pas autorisé à voir cette page.'"></p>
+    <a href="/login">Retour à la connexion</a>
+
+    <script>
+        setTimeout(() => {
+            window.location.href = "/login";
+        }, 3000);
+    </script>
+</body>
+</html>

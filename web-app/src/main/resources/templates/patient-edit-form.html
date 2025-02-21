@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Édition du patient</title>
+</head>
+<body>
+    <h1>Modifier les détails du patient</h1>
+    
+    <form th:action="@{/patients/edit/{id}(id=${patient.id})}" method="post" th:object="${patient}">
+        <input type="hidden" th:field="*{id}" />
+        
+        <div>
+            <label for="firstName">Prénom:</label>
+            <input type="text" id="firstName" th:field="*{firstName}" required />
+        </div>
+        
+        <div>
+            <label for="lastName">Nom:</label>
+            <input type="text" id="lastName" th:field="*{lastName}" required />
+        </div>
+
+        <div>
+            <label for="birthDate">Date de naissance:</label>
+            <input type="date" id="birthDate" th:field="*{birthDate}" required />
+        </div>
+
+        <div>
+            <label for="gender">Sexe:</label>
+            <select id="gender" th:field="*{gender}" required>
+                <option value="M" >Homme</option>
+                <option value="F" >Femme</option>
+	            </select>
+        </div>
+
+        <div>
+            <label for="address">Adresse:</label>
+            <input type="text" id="address" th:field="*{address}" required />
+        </div>
+
+        <div>
+            <label for="phoneNumber">Numéro de téléphone:</label>
+            <input type="text" id="phoneNumber" th:field="*{phoneNumber}" required />
+        </div>
+
+        <div>
+            <button type="submit">Sauvegarder patient</button>
+            <a href="#" th:href="@{/patients/{id}(id=${patient.id})}">Annuler</a>
+        </div>
+    </form>
+
+	    
+</body>
+</html>

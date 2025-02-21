@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  web-app:
+    build: ./web-app
+    container_name: web-app
+    ports:
+      - "8082:8082"
+    depends_on:
+      - gateway-service
+
+  gateway-service:
+    build: ./gateway-service
+    container_name: gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - patient-service
+
+  patient-service:
+    build: ./patient-service
+    container_name: patient-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    environment:
+      - MYSQL_HOST=mysql-db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=medilabo
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD='*!Robinhood974!*'
+
+  db:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: '*!Robinhood974!*'
+      MYSQL_DATABASE: medilabo
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+
+  note-service:
+    build: ./note-service
+    container_name: note-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mongo-db
+    environment:
+      - MONGO_URI=mongodb://adminDB:AdminPass@mongo-db:27017/note?authSource=admin
+
+  mongo-db:
+    image: mongo:latest
+    container_name: mongo-db
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: adminDB
+      MONGO_INITDB_ROOT_PASSWORD: AdminPass
+    networks:
+      - backend
+
+  diabetes-service:
+    build: ./diabetes-service
+    container_name: diabetes-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - gateway-service
+
+  auth:
+    build: ./auth
+    container_name: auth
+    ports:
+      - "8084:8084"
+    depends_on:
+      - gateway-service
+
+networks:
+  backend:
+
+volumes:
+  mongo-data:
