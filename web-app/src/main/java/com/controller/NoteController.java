@@ -129,7 +129,7 @@ public class NoteController {
         	    .onErrorResume(e -> {
         	        log.error("Erreur lors de l'exécution des requêtes", e);
         	        model.addAttribute("userCredential", new Credentials());
-        	        return Mono.just(Mono.just("patient-detail"));
+        	        return Mono.just(Mono.just("patient-details"));
         	    });
     }
  
