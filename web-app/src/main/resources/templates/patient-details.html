@@ -25,6 +25,14 @@
             top: 15px;
             right: 15px;
         }
+
+        /* Réduire la largeur de la colonne 'Contenu' et permettre un défilement */
+        .table td.pre {
+            max-width: 300px; /* Limiter la largeur */
+            overflow: auto; /* Permettre le défilement horizontal */
+            white-space: nowrap; /* Empêcher le retour à la ligne */
+            text-overflow: ellipsis; /* Ajouter des "..." si le texte est trop long */
+        }
     </style>
 </head>
 <body>

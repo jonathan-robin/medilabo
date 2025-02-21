@@ -1,6 +1,7 @@
 # Étape 1 : Construction de l'application
 FROM maven:3.8.5-openjdk-11-slim AS build
 
+
 # Répertoire de travail pour la construction
 WORKDIR /app
 

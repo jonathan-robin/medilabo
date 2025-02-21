@@ -1,5 +1,5 @@
 # Étape 1 : Utilisation de l'image Maven pour construire le projet
-FROM maven:3.8.6-openjdk-17 AS build
+FROM openjdk:17-slim AS build
 
 WORKDIR /app
 
