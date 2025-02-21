@@ -10,7 +10,6 @@ public class CookieService {
 
 	public String getCookie(HttpServletRequest request) {
 		
-		
 		String jwtFromHeader = null;
         String jwtFromCookie = null;
         String jwt = null;
@@ -27,13 +26,8 @@ public class CookieService {
         
         jwt = (jwtFromCookie != null) ? jwtFromCookie : jwtFromHeader;
         return jwt;
-        
-
    
 	}
-	
-	
-	
-	
+
 	
 }

@@ -16,13 +16,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.dto.PatientDto;
 import com.model.Credentials;
 import com.model.User;
-import com.service.AuthService;
 import com.service.UserService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -30,8 +28,6 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class AuthController {
 
-
-    private final AuthService authService;
     @Autowired
     private UserService userService; 
 
@@ -53,9 +49,8 @@ public class AuthController {
     private final WebClient.Builder webClientBuilder;
 
     @Autowired
-    public AuthController(WebClient.Builder webClientBuilder, AuthService authService) {
+    public AuthController(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;
-        this.authService = authService;
     }
     
     @PostMapping(value = "/login")

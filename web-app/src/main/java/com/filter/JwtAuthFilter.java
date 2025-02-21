@@ -49,12 +49,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
         }
-        else { 
-        	log.info("No cookie in filter web-app");
-        }
-
+     
         if (jwt == null) {
-        	log.info("jwt is null in filter web-app : redirect");
             response.sendRedirect("/login");
             return;
         }
@@ -65,21 +61,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     .roles("USER")
                     .build();
 
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities()
-            );
-
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        else { 
-        	log.info("Security context get authenticatoin is not null ");
-        }
-        
-
-        log.info("request  in filter{} with path ", request.getHeader("Authorization"), request.getRequestURI());
-        log.info("response in filter{}, {}", response.getHeader("Authorization"), response.getStatus());
 
         filterChain.doFilter(request, response);
     }

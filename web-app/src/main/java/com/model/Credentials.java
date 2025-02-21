@@ -16,6 +16,4 @@ public class Credentials {
     	this.password = password;
     }
     
-    private String email;
-    
 }
