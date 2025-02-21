@@ -1,4 +1,4 @@
-package com.config;
+package com.filter;
 
 import java.io.IOException;
 
@@ -28,14 +28,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
     	
-    	
-
         String requestURI = request.getRequestURI();
+        
+        /* redirect to auth-service */
         if (requestURI.startsWith("/login") || requestURI.startsWith("/public") || requestURI.startsWith("/css") || requestURI.startsWith("/js") || requestURI.startsWith("/images")) {
             filterChain.doFilter(request, response);
             return;
         }
         
+        
+        /* else if its first callback from auth-service and the jwt is correct save user in memory */ 
         String jwt = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -58,37 +60,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Si le JWT est présent, authentifier l'utilisateur
-        // Si le JWT est présent et que l'utilisateur n'est pas encore authentifié
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Remplace par un utilisateur réel (par exemple, tu pourrais extraire l'utilisateur via un service)
-            UserDetails userDetails = User.withUsername("user") // Remplacer par l'utilisateur réel
-                    .password("") // Pas besoin de mot de passe ici
-                    .roles("USER") // Définit les rôles selon les besoins
+            UserDetails userDetails = User.withUsername("user") 
+                    .password("") 
+                    .roles("USER")
                     .build();
 
-            // Crée un objet d'authentification
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities()
             );
 
-            // Ajoute les détails de l'authentification (détails de la requête)
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            // Définit l'authentification dans le contexte de sécurité
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         else { 
         	log.info("Security context get authenticatoin is not null ");
-
         }
         
 
         log.info("request  in filter{} with path ", request.getHeader("Authorization"), request.getRequestURI());
-
         log.info("response in filter{}, {}", response.getHeader("Authorization"), response.getStatus());
 
-        // Continuer la requête si tout est ok
         filterChain.doFilter(request, response);
     }
 }

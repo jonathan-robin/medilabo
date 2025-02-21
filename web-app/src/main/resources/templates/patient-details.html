@@ -77,6 +77,23 @@
                 </div>
             </div>
 
+            <!-- Nouveau Bloc Risques -->
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm p-3">
+                    <h4 class="mb-3">Risques</h4>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Risque</th>
+                            <td th:text="${patientRisk.risk}"></td>
+                        </tr>
+                        <tr>
+                            <th>Occurence de risque</th>
+                            <td th:text="${patientRisk.count}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
             <!-- Bloc Notes du patient -->
             <div class="col-md-12">
                 <div class="card shadow-sm p-3">

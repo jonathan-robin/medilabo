@@ -11,7 +11,7 @@ public class WebClientConfig {
     public WebClient webClient() {
     	
         return WebClient.builder()
-                .baseUrl("http://localhost:8080") // Adresse de auth-service
+                .baseUrl("http://localhost:8080")
                 .build();
     }
 }

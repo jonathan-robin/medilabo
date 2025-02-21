@@ -39,7 +39,12 @@ public class RouteConfig {
                               .route("notes", r -> r.path("/notes/**")
                             		  .uri("http://localhost:8083/notes"))	  
                               
-                               .build();
+                               
+        		
+					            .route("diabetes", r -> r.path("/diabetes/**")
+					          		  .uri("http://localhost:8085/diabetes"))	  
+					            
+					             .build();
                 
                 
         }

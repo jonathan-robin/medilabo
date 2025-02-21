@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.dto.NoteDto;
 import com.dto.PatientDto;
+import com.dto.PatientRiskDto;
 import com.model.Credentials;
 
 import jakarta.servlet.http.Cookie;
@@ -36,7 +37,8 @@ public class NoteController {
     public NoteController(WebClient webClient) {
         this.webClient = webClient;
     }
- 
+  
+    
     @GetMapping("edit/{id}")
     public Mono<String> showNote(@PathVariable String id, Model model, HttpServletRequest request, HttpServletResponse response) {
 

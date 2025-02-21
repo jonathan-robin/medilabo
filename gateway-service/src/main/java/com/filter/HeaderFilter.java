@@ -37,63 +37,17 @@ public class HeaderFilter extends AbstractGatewayFilterFactory<HeaderFilter.Conf
     }
 
     public static class Config {
-        // Configurations can be added here if necessary
+    	/* custom modification could be add here 
+    	 * maybe crypt jwtSecret with custom secret - add more security */
+    	private String jwtSecret;
     }
-
-
-
-
-//        private String extractJwtFromCookie(ServerHttpRequest request) {
-//            return request.getCookies().getFirst("JWT") != null ?
-//                    request.getCookies().getFirst("JWT").getValue() : null;
-//        }
-//    }
-
-//    
-//    @Override
-//    public GatewayFilter apply(Config config) {
  
-        @Override
-        public GatewayFilter apply(Config config) {
-//            return (exchange, chain) -> {
-//            	
-//            	String path = exchange.getRequest().getURI().getPath();
-//
-//    	        if (path.equals("/login")) 
-//    	            return chain.filter(exchange);
-//    	        
-//                ServerHttpRequest request = exchange.getRequest();
-//                String jwt = extractJwtFromCookie(request);
-//
-//                if (!isJwtValid(jwt)) 
-//                    return onError(exchange.getResponse(), "Invalid JWT token", HttpStatus.UNAUTHORIZED);
-//                
-//                if (jwt != null) {
-//                    ServerHttpRequest modifiedRequest = request.mutate()
-//                            .header("Authorization", "Bearer " + jwt)
-//                            .build();
-//
-//                    return chain.filter(exchange.mutate().request(modifiedRequest).build());
-//                }
-//                return chain.filter(exchange);
-//            };
-//        }
-//    	
-//    	
-//    	log.info("apply: {}", config);
+    @Override
+    public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-        	
-        	
-//        	if (exchange.getRequest().getURI().getPath().equals(config))
-//        	
-        	log.info("request path: {}", exchange.getRequest().getURI().getPath());
-
-
         	 
-            ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
-            log.info("Request Headers: {}", request.getHeaders());
             String jwt = null;
             
             MultiValueMap<String, HttpCookie> cookies = exchange.getRequest().getCookies();
@@ -104,23 +58,9 @@ public class HeaderFilter extends AbstractGatewayFilterFactory<HeaderFilter.Conf
                     }
                 }
             }
-//
-//            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-//                return onError(response, "No Authorization header", HttpStatus.UNAUTHORIZED);
-//            }
-
-//            String authorizationHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-//            log.info("authorizationHeader= {}", authorizationHeader);
-//
-//            if (!authorizationHeader.startsWith("Bearer ")) {
-//                return onError(response, "Invalid Authorization header", HttpStatus.UNAUTHORIZED);
-//            }
-//
-//            String jwt = authorizationHeader.replace("Bearer ", "");
-            if (!isJwtValid(jwt)) {
-            	log.info("wrong JWT token");
+            
+            if (!isJwtValid(jwt))
             	return onError(response, "Invalid JWT token", HttpStatus.UNAUTHORIZED);
-            }
             
             return chain.filter(exchange);
         };
