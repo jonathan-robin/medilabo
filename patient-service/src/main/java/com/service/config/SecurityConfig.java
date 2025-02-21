@@ -28,12 +28,6 @@ public class SecurityConfig {
     
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
-
- 
-//    @Autowired
-//    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
-//        this.jwtAuthFilter = jwtAuthFilter;
-//    }
     
     @Bean
     public JwtDecoder jwtDecoder() {
