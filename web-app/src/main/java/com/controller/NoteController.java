@@ -48,41 +48,21 @@ public class NoteController {
     @GetMapping("edit/{id}")
     public Mono<String> showNote(@PathVariable String id, Model model, HttpServletRequest request, HttpServletResponse response) {
 
-    	    String jwtFromHeader = null;
-    	    String jwtFromCookie = null;
-    	    String jwt = null;
-
-    	    if (request.getHeader("Authorization") != null)
-    	        jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
-
-    	    Cookie[] cookies = request.getCookies();
-    	    for (Cookie cookie: cookies) {
-    	        if (cookie.getName().equals("JWT")) {
-    	            jwtFromCookie = cookie.getValue();
-    	        }
-    	    }
-    	    log.info("JWT from Header: {}", jwtFromHeader);
-    	    log.info("JWT from Cookie: {}", jwtFromCookie);
-    	    if (jwtFromCookie != null)
-    	        jwt = jwtFromCookie;
-    	    else if (jwtFromHeader != null)
-    	        jwt = jwtFromHeader;
-
-    	    if (jwt == null && jwtFromCookie == null && jwt == null) {
-    	        log.info("No auth available");
-    	        return Mono.just("login");
-    	    }
-
-    	    return webClient.get()
-	            .uri("/notes/" + id)
-	            .header("Authorization", "Bearer " + jwt)
-	            .cookie("JWT", jwt)
-	            .retrieve()
-	            .bodyToMono(NoteDto.class)
-	            .flatMap(note -> {
-	            	model.addAttribute("note", note);
-	            	return Mono.just("notes/edit-form");
-	            });
+    	final String jwt = cookieService.getCookie(request);
+    	
+      	 if (jwt == null)
+       		 return Mono.just("login");
+    	
+	    return webClient.get()
+            .uri("/notes/" + id)
+            .header("Authorization", "Bearer " + jwt)
+            .cookie("JWT", jwt)
+            .retrieve()
+            .bodyToMono(NoteDto.class)
+            .flatMap(note -> {
+            	model.addAttribute("note", note);
+            	return Mono.just("notes/edit-form");
+            });
 
     }
 
@@ -178,16 +158,14 @@ public class NoteController {
 
     }
     
-	/* GET patient ID to sho form to add a note */
     @GetMapping("/{patientId}/add")
     public String showCreateNoteForm(@PathVariable("patientId") String patientId, Model model) {
-    	 NoteDto note = new NoteDto(); // Crée un nouvel objet NoteDto sans ID
-         note.setPatientId(patientId); // Associer la note au patient
+    	 NoteDto note = new NoteDto();
+         note.setPatientId(patientId);
          model.addAttribute("note", note);
          note.setContent("");
-         model.addAttribute("patientId", patientId); // Passer l'ID du patient au template
-
-         return "notes/add-form"; // Nom du templ
+         model.addAttribute("patientId", patientId);
+         return "notes/add-form";
     }
 
     /* POST pôur sauver une note en passant dto */
@@ -222,7 +200,6 @@ public class NoteController {
 		   	         return patientController.getPatientRisk(patientId, model, jwt);
    	            })
    	            .onErrorResume(e -> {
-   	                 log.error("Erreur lors de l'update de la note", e);
   	 	               model.addAttribute("note", new NoteDto());
   	 	              return Mono.just("notes/edit-form");
    	            });

@@ -106,7 +106,6 @@ public class PatientController {
 
     public Mono<String> getPatientRisk(String patientId, Model model, String jwt) {
     	
-    	log.info("****[JWT]**** in PatientController.getPatientRisk {}", jwt);
         return webClient.get()
                 .uri("/diabetes/" + patientId)
                 .header("Authorization", "Bearer " + jwt)
@@ -121,8 +120,7 @@ public class PatientController {
                     return Mono.just("patient-details");
                 })
                 .onErrorResume(error -> {
-                    log.error("Erreur critique sur /diabetes/{}", patientId);
-                    return Mono.empty(); // Empêche un crash si erreur
+                    return Mono.empty();
                 });
     }
 
@@ -148,8 +146,7 @@ public class PatientController {
     	            jwtFromCookie = cookie.getValue();
     	        }
     	    }
-    	    log.info("JWT from Header: {}", jwtFromHeader);
-    	    log.info("JWT from Cookie: {}", jwtFromCookie);
+    	    
     	    if (jwtFromCookie != null)
     	        jwt = jwtFromCookie;
     	    else if (jwtFromHeader != null)
@@ -177,9 +174,7 @@ public class PatientController {
 	    	            .bodyToFlux(NoteDto.class)
 	    	            .collectList()
 	    	            .doOnNext(notes -> log.info("Détails note : {}", notes.toString()))
-	    	            .map(notes -> {
-	    	            	
-	    	            	log.info("Note: {}", notes);
+	    	            .map(notes -> {	    	            	
 	    	            	Arrays.asList(notes).forEach(n -> log.info("Note{} :", n.toString()));
 	    	            	model.addAttribute("patient", patient);
 	    	            	model.addAttribute("notes", notes);
@@ -190,7 +185,7 @@ public class PatientController {
     
 
     @PostMapping("/edit/{id}")
-    public Mono<String> editPatient(@ModelAttribute("patient") PatientDto patientDto, @PathVariable Long id, Model model,  HttpServletRequest request) {
+    public Mono<Mono<String>> editPatient(@ModelAttribute("patient") PatientDto patientDto, @PathVariable Long id, Model model,  HttpServletRequest request) {
     	
     	String jwtFromHeader = null;
  	    String jwtFromCookie = null;
@@ -205,19 +200,14 @@ public class PatientController {
  	            jwtFromCookie = cookie.getValue();
  	        }
  	    }
- 	    log.info("JWT from Header: {}", jwtFromHeader);
- 	    log.info("JWT from Cookie: {}", jwtFromCookie);
  	    if (jwtFromCookie != null)
  	        jwt = jwtFromCookie;
  	    else if (jwtFromHeader != null)
  	        jwt = jwtFromHeader;
 
- 	    if (jwt == null && jwtFromCookie == null && jwt == null) {
- 	        log.info("No auth available");
- 	        return Mono.just("login");
- 	    }
+ 	    if (jwt == null && jwtFromCookie == null && jwt == null)
+             return Mono.just(Mono.just("redirect:/login"));
 
- 	    log.info("JPOST WT in patient controller /edit/{id} : {}", jwt);
  	    return webClient.put()
  	            .uri("/patients/" + id)
                 .bodyValue(patientDto)
@@ -225,15 +215,13 @@ public class PatientController {
  	            .cookie("JWT", jwt)
  	            .retrieve()
  	            .bodyToMono(PatientDto.class)
- 	            .doOnNext(patient -> log.info("Détails patient : {}", patient))
  	            .map(patient -> {
- 	                model.addAttribute("patient", patient);
- 	                return "patient-details";  // Nom du formulaire d'édition
+ 	            	return getPatientDetails(patientDto.getId().toString(), model, request);
  	            })
  	            .onErrorResume(e -> {
  	                log.error("Erreur lors de la récupération du patient", e);
  	                model.addAttribute("userCredential", new Credentials());
- 	                return Mono.just("redirect:/login");
+ 	                return Mono.just(Mono.just("redirect:/login"));
  	            });
 
     	
@@ -268,7 +256,6 @@ public class PatientController {
  	        return Mono.just("login");
  	    }
 
- 	    log.info("JPOST WT in patient controller /delete/{id} : {}", jwt);
  	    return webClient.delete()
  	            .uri("/patients/" + id)
  	            .header("Authorization", "Bearer " + jwt)
