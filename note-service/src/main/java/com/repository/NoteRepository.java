@@ -23,6 +23,7 @@ public interface NoteRepository extends ReactiveMongoRepository<Note, String> {
 	            "{ $project: { count: { $size: '$termsTrigger'}}}}"})
 			Mono<PatientRiskDto> computeTriggers(Long patientId, String regex);
 		
+		public Mono<Void> deleteAllPatientNote(String patientId);
 		
 
 	

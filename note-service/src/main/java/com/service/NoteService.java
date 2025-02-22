@@ -72,6 +72,9 @@ public class NoteService {
             .switchIfEmpty(Mono.error(new RuntimeException("Note not found")));
     }
 
+    public Mono<Void> deleteAllPatientNote(String patientId) {
+    	return noteRepo.deleteAllPatientNote(patientId);
+    }
 
     
 	
