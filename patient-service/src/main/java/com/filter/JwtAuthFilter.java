@@ -28,7 +28,6 @@ public class JwtAuthFilter extends OncePerRequestFilter implements Ordered, Filt
     private static final String ALLOWED_ORIGIN = "localhost:8080";
     private static final String USER_AGENT = "ReactorNetty/1.1.0";
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

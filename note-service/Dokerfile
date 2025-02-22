@@ -1,0 +1,6 @@
+FROM openjdk:17-alpine
+LABEL application-name="note-service"
+VOLUME [ "/main-app" ]
+ADD target/note-service-3.2.1.jar note-service.jar
+EXPOSE 8082
+ENTRYPOINT [ "java","-jar","/note-service.jar" ]

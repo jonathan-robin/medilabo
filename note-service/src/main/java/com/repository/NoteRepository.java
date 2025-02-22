@@ -20,7 +20,7 @@ public interface NoteRepository extends ReactiveMongoRepository<Note, String> {
 	            "{$set: { termsTrigger: { $map: { input: '$termsTrigger.match', in: { $toLower: '$$this'}}}}}",
 	            "{$unwind: {path: '$termsTrigger', includeArrayIndex: 'string',preserveNullAndEmptyArrays: true}}",
 	            "{$group: { _id: '$patient._id', termsTrigger: { $addToSet: '$termsTrigger'}}}",
-	            "{ $project: { sumTermTriggers: { $size: '$termsTrigger'}}}}"})
+	            "{ $project: { count: { $size: '$termsTrigger'}}}}"})
 			Mono<PatientRiskDto> computeTriggers(Long patientId, String regex);
 		
 		
