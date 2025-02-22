@@ -3,107 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <title>Édition du patient</title>
-</head>
-<body>
-    <h1>Modifier les détails du patient</h1>
-    
-    <form th:action="@{/patients/edit/{id}(id=${patient.id})}" method="post" th:object="${patient}">
-        <input type="hidden" th:field="*{id}" />
-        
-        <div>
-            <label for="firstName">Prénom:</label>
-            <input type="text" id="firstName" th:field="*{firstName}" required />
-        </div>
-        
-        <div>
-            <label for="lastName">Nom:</label>
-            <input type="text" id="lastName" th:field="*{lastName}" required />
-        </div>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-        <div>
-            <label for="birthDate">Date de naissance:</label>
-            <input type="date" id="birthDate" th:field="*{birthDate}" required />
-        </div>
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
 
-        <div>
-            <label for="gender">Sexe:</label>
-            <select id="gender" th:field="*{gender}" required>
-                <option value="M" >Homme</option>
-                <option value="F" >Femme</option>
-	            </select>a<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Édition du patient</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            margin-top: 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .cancel-btn {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .cancel-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="title">Modifier les détails du patient</h1>
-        
-        <form th:action="@{/patients/edit/{id}(id=${patient.id})}" method="post" th:object="${patient}" class="form">
-            <input type="hidden" th:field="*{id}" />
-            
-            <div class="form-group">
-                <label for="firstName">Prénom:</label>
-                <input type="text" id="firstName" th:field="*{firstName}" required class="form-control" />
-            </div>
-            
-            <div class="form-group">
-                <label for="lastName">Nom:</label>
-                <input type="text" id="lastName" th:field="*{lastName}" required class="form-control" />
-            </div>
-    
-            <div class="form-group">
-                <label for="birthDate">Date de naissance:</label>
-                <input type="date" id="birthDate" th:field="*{birthDate}" required class="form-control" />
-            </div>
-    
-            <div class="form-group">
-                <label for="gender">Sexe:</label>
-                <select id="gender" th:field="*{gender}" required class="form-control">
-                    <option value="M">Homme</option>
-                    <option value="F">Femme</option>
-                </select>
-            </div>
-    
-            <div class="form-group">
-                <label for="address">Adresse:</label>
-                <input type="text" id="address" th:field="*{address}" required class="form-control" />
-            </div>
-    
-            <div class="form-group">
-                <label for="phoneNumber">Numéro de téléphone:</label>
-                <input type="text" id="phoneNumber" th:field="*{phoneNumber}" required class="form-control" />
-            </div>
-    
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Sauvegarder</button>
-                <a th:href="@{/patients/{id}(id=${patient.id})}" class="btn btn-secondary">Annuler</a>
-            </div>
-        </form>
-    </div>
-</body>
-</html>
-	            
-        </div>
+        <h1>Modifier les détails du patient</h1>
 
-        <div>
+        <form th:action="@{/patients/edit/{id}(id=${patient.id})}" method="post" th:object="${patient}">
+            <input type="hidden" th:field="*{id}" />
+
+            <label for="firstName">Prénom:</label>
+            <input type="text" id="firstName" th:field="*{firstName}" required />
+
+            <label for="lastName">Nom:</label>
+            <input type="text" id="lastName" th:field="*{lastName}" required />
+
+            <label for="birthDate">Date de naissance:</label>
+            <input type="date" id="birthDate" th:field="*{birthDate}" required />
+
+            <label for="gender">Sexe:</label>
+            <select id="gender" th:field="*{gender}" required>
+                <option value="M">Homme</option>
+                <option value="F">Femme</option>
+            </select>
+
             <label for="address">Adresse:</label>
             <input type="text" id="address" th:field="*{address}" required />
-        </div>
 
-        <div>
             <label for="phoneNumber">Numéro de téléphone:</label>
             <input type="text" id="phoneNumber" th:field="*{phoneNumber}" required />
-        </div>
 
-        <div>
             <button type="submit">Sauvegarder patient</button>
-            <a href="#" th:href="@{/patients/{id}(id=${patient.id})}">Annuler</a>
-        </div>
-    </form>
-
-	    
+            <a href="#" th:href="@{/patients/{id}(id=${patient.id})}" class="cancel-btn">Annuler</a>
+        </form>
+    </div>
 </body>
 </html>

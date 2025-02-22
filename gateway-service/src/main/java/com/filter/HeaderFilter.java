@@ -67,8 +67,6 @@ public class HeaderFilter extends AbstractGatewayFilterFactory<HeaderFilter.Conf
         byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
         var secretKey = Keys.hmacShaKeyFor(secretKeyBytes);
         
-        log.info("tokenSecret={}",tokenSecret);
-
         try {
          
             Claims claims = Jwts.parser()
@@ -76,15 +74,9 @@ public class HeaderFilter extends AbstractGatewayFilterFactory<HeaderFilter.Conf
                     .build() 
                     .parseClaimsJws(jwt)  
                     .getBody(); 
-
-            
-            log.info("claims: {}",claims );
-            log.info("claims != null: {}",claims != null );
-            log.info("laims.get(\"jti\") != null: {}",claims.get("jti") != null );
             
             return claims != null;
         } catch (Exception e) {
-        	log.info("jwt={}, exception={}",jwt, e);
             return false;
         }
     }

@@ -1,19 +1,14 @@
 package com.controller;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,11 +18,9 @@ import com.dto.PatientRiskDto;
 import com.model.Credentials;
 import com.service.CookieService;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Controller
@@ -133,31 +126,10 @@ public class PatientController {
     @GetMapping("edit/{id}")
     public Mono<String> showUpdateForm(@PathVariable Long id, Model model, HttpServletRequest request, HttpServletResponse response) {
 
-    	    String jwtFromHeader = null;
-    	    String jwtFromCookie = null;
-    	    String jwt = null;
-
-    	    if (request.getHeader("Authorization") != null)
-    	        jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
-
-    	    Cookie[] cookies = request.getCookies();
-    	    for (Cookie cookie: cookies) {
-    	        if (cookie.getName().equals("JWT")) {
-    	            jwtFromCookie = cookie.getValue();
-    	        }
-    	    }
-    	    
-    	    if (jwtFromCookie != null)
-    	        jwt = jwtFromCookie;
-    	    else if (jwtFromHeader != null)
-    	        jwt = jwtFromHeader;
-
-    	    if (jwt == null && jwtFromCookie == null && jwt == null) {
-    	        log.info("No auth available");
-    	        return Mono.just("login");
-    	    }
-
-    	    final String _jwt = jwt;
+    		final String jwt = cookieService.getCookie(request); 
+    		
+    		if (jwt == null)
+    			return Mono.just("/login");
     	    
     	    return webClient.get()
 	            .uri("/patients/" + id)
@@ -168,14 +140,12 @@ public class PatientController {
 	            .flatMap(patient -> {
 	            	return webClient.get()
 		            	.uri("/notes/patient/"+id)
-		            	.header("Authorization", "Bearer " + _jwt)
-	    	            .cookie("JWT", _jwt)
+		            	.header("Authorization", "Bearer " + jwt)
+	    	            .cookie("JWT", jwt)
 	    	            .retrieve()
 	    	            .bodyToFlux(NoteDto.class)
 	    	            .collectList()
-	    	            .doOnNext(notes -> log.info("Détails note : {}", notes.toString()))
 	    	            .map(notes -> {	    	            	
-	    	            	Arrays.asList(notes).forEach(n -> log.info("Note{} :", n.toString()));
 	    	            	model.addAttribute("patient", patient);
 	    	            	model.addAttribute("notes", notes);
 	    	            	return "patient-edit-form";
@@ -187,26 +157,10 @@ public class PatientController {
     @PostMapping("/edit/{id}")
     public Mono<Mono<String>> editPatient(@ModelAttribute("patient") PatientDto patientDto, @PathVariable Long id, Model model,  HttpServletRequest request) {
     	
-    	String jwtFromHeader = null;
- 	    String jwtFromCookie = null;
- 	    String jwt = null;
-
- 	    if (request.getHeader("Authorization") != null)
- 	        jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
-
- 	    Cookie[] cookies = request.getCookies();
- 	    for (Cookie cookie: cookies) {
- 	        if (cookie.getName().equals("JWT")) {
- 	            jwtFromCookie = cookie.getValue();
- 	        }
- 	    }
- 	    if (jwtFromCookie != null)
- 	        jwt = jwtFromCookie;
- 	    else if (jwtFromHeader != null)
- 	        jwt = jwtFromHeader;
-
- 	    if (jwt == null && jwtFromCookie == null && jwt == null)
-             return Mono.just(Mono.just("redirect:/login"));
+		final String jwt = cookieService.getCookie(request); 
+		
+		if (jwt == null)
+			return Mono.just(Mono.just("/login"));
 
  	    return webClient.put()
  	            .uri("/patients/" + id)
@@ -232,29 +186,10 @@ public class PatientController {
     @GetMapping("/delete/{id}")
     public Mono<String> deletePatient(@PathVariable Long id, Model model,  HttpServletRequest request) {
     	
-    	String jwtFromHeader = null;
- 	    String jwtFromCookie = null;
- 	    String jwt = null;
-
- 	    if (request.getHeader("Authorization") != null)
- 	        jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
-
- 	    Cookie[] cookies = request.getCookies();
- 	    for (Cookie cookie: cookies) {
- 	        if (cookie.getName().equals("JWT")) {
- 	            jwtFromCookie = cookie.getValue();
- 	        }
- 	    }
-
- 	    if (jwtFromCookie != null)
- 	        jwt = jwtFromCookie;
- 	    else if (jwtFromHeader != null)
- 	        jwt = jwtFromHeader;
-
- 	    if (jwt == null && jwtFromCookie == null && jwt == null) {
- 	        log.info("No auth available");
- 	        return Mono.just("login");
- 	    }
+		final String jwt = cookieService.getCookie(request); 
+		
+		if (jwt == null)
+			return Mono.just("/login");
 
  	    return webClient.delete()
  	            .uri("/patients/" + id)
@@ -267,7 +202,6 @@ public class PatientController {
                     return "index";
  	            })
  	            .onErrorResume(e -> {
- 	                log.error("Erreur lors de la récupération du patient", e);
  	               return webClient.get()
  	       	            .uri("/patients")
  	       	            .header("Authorization", request.getHeader("Authorization"))
@@ -285,32 +219,10 @@ public class PatientController {
     @PostMapping("/save")
     public Mono<String> savePatient(@ModelAttribute PatientDto patientDto, Model model,  HttpServletRequest request) {
     	
-    	String jwtFromHeader = null;
- 	    String jwtFromCookie = null;
- 	    String jwt = null;
-
- 	    if (request.getHeader("Authorization") != null)
- 	        jwtFromHeader = request.getHeader("Authorization").replace("Bearer ", "");
-
- 	    Cookie[] cookies = request.getCookies();
- 	    for (Cookie cookie: cookies) {
- 	        if (cookie.getName().equals("JWT")) {
- 	            jwtFromCookie = cookie.getValue();
- 	        }
- 	    }
- 	    log.info("JWT from Header: {}", jwtFromHeader);
- 	    log.info("JWT from Cookie: {}", jwtFromCookie);
- 	    if (jwtFromCookie != null)
- 	        jwt = jwtFromCookie;
- 	    else if (jwtFromHeader != null)
- 	        jwt = jwtFromHeader;
-
- 	    if (jwt == null && jwtFromCookie == null && jwt == null) {
- 	        log.info("No auth available");
- 	        return Mono.just("login");
- 	    }
-
- 	    log.info("JPOST WT in patient controller /save/{id} : {}", jwt);
+		final String jwt = cookieService.getCookie(request); 
+		
+		if (jwt == null)
+			return Mono.just("/login");
  	    return webClient.post()
  	            .uri("/patients")
                 .bodyValue(patientDto)
