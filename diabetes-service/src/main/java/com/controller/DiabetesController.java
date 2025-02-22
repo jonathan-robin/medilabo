@@ -48,13 +48,11 @@ public class DiabetesController {
 
         final String jwtToken = jwt.replace("Bearer ", "");
         log.info("Token JWT nettoyé: {}", jwtToken);
-        
         log.info("Appel GET /diabetes/{}", patientId);
 
-        // Récupération du patient
         Mono<PatientRiskDto> risk = webClient.get()
             .uri("http://localhost:8080/patients/{id}", patientId)
-            .header("Authorization", "Bearer " + jwtToken)  // Ajouter le JWT
+            .header("Authorization", "Bearer " + jwtToken)
             .cookie("JWT", jwtToken)
             .retrieve()
             .bodyToMono(PatientDto.class)
@@ -63,15 +61,10 @@ public class DiabetesController {
                 List<String> triggerList = Arrays.stream(Trigger.values())
                         .map(Trigger::toString)
                         .collect(Collectors.toList());
-
-                log.info("Envoi de la requête à /notes/triggers/{} avec triggers={}", patientId, triggerList);
-                
-//                values.forEach(v -> log.info("{}", v.toString()));
-                
-                // Récupération des déclencheurs
+                                
                 return webClient.post()
                     .uri("http://localhost:8080/notes/triggers/" + patientId)
-                    .header("Authorization", "Bearer " + jwtToken)  // Ajouter le JWT
+                    .header("Authorization", "Bearer " + jwtToken)
                     .cookie("JWT", jwtToken)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(triggerList))
@@ -79,13 +72,12 @@ public class DiabetesController {
                     .bodyToMono(PatientRiskDto.class)
                     .flatMap(riskDto -> {
                         log.info("Réponse des notes: {}", riskDto);
-                        // Évaluation du risque
                         PatientRiskDto evaluatedRisk = diabetesSvc.evaluateDiabetesRisk(patient, Integer.parseInt(patientId));
                         return Mono.just(evaluatedRisk);
                     })
                     .onErrorResume(error -> {
                         log.error("Erreur lors de l'appel aux notes: {}", error.getMessage());
-                        return Mono.empty(); // Renvoie un Mono vide si erreur
+                        return Mono.empty();
                     });
             })
             .onErrorResume(error -> {

@@ -13,11 +13,11 @@ public class AuthSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()  // Désactive CSRF si non nécessaire
+            .csrf().disable()  
             .authorizeRequests()
-            .requestMatchers("/login", "/public/**")  // Permet l'accès sans authentification pour ces chemins
+            .requestMatchers("/login", "/public/**")  
             .permitAll()
-            .anyRequest().authenticated();  // Authentification requise pour toutes les autres requêtes
+            .anyRequest().authenticated();
         return http.build();
     }
 }

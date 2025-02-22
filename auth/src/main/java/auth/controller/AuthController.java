@@ -26,7 +26,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Credentials credentials, HttpServletRequest request, HttpServletResponse response) {
     	
-        log.info("Intercept request POST /login : username={}, password={}", credentials.getUsername(), credentials.getPassword());
         if ("user".equals(credentials.getUsername()) && "pass".equals(credentials.getPassword())) {
         	String jwt = auth.login(credentials.getUsername(), credentials.getPassword());
         	response.setHeader("Authorization", "Bearer "+jwt);

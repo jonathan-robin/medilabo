@@ -3,7 +3,6 @@ package com.service.config;
 import javax.crypto.SecretKey;
 import java.util.Base64;
 
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -46,9 +46,6 @@ public class JwtAuthFilter extends OncePerRequestFilter implements Ordered, Filt
             }
         }
         
-
-        
-        
         /* else if its first callback from auth-service and the jwt is correct save user in memory */ 
         String jwt = null;
         Cookie[] cookies = request.getCookies();
