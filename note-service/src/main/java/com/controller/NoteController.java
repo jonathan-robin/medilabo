@@ -69,6 +69,11 @@ public class NoteController {
     public ResponseEntity<Mono<Void>> deleteNote(@PathVariable(value = "id") String id) {
         return ResponseEntity.ok(noteService.deleteNote(id));
     }
+    
+    @DeleteMapping("/patient/{patientId}")
+    public ResponseEntity<Mono<Void>> deleteAllPatientNote(@PathVariable(value = "patientId") String patientId) {
+        return ResponseEntity.ok(noteService.deleteAllPatientNote(patientId));
+    }
 
 	@GetMapping("/patient/{id}")
     public Flux<Note> findByPatientId(@PathVariable("id") String id, HttpServletRequest request, HttpServletResponse response) {

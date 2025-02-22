@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bienvenue sur Medilabo</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #f0f8ff, #e6f7ff);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            font-size: 18px;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        p {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+        }
+
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="fragments/header :: body"></div>
+
+    <div class="container">
+        <h1>Bienvenue sur Medilabo</h1>
+        <p>Nous sommes ravis de vous accueillir dans l'application Medilabo. Grâce à notre plateforme, vous avez accès à une solution innovante et sécurisée pour le suivi médical. Nous vous souhaitons une expérience agréable et productive !</p>
+        <p>Pour commencer, explorez les différentes sections et suivez les instructions pour tirer le meilleur parti de notre service.</p>
+
+        <div class="footer">
+            <p>Pour plus d'informations, <a href="#">contactez-nous</a>.</p>
+        </div>
+    </div>
+<div th:replace="fragments/footer :: body"></div>
+</body>
+
+</html>

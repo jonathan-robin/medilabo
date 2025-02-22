@@ -73,7 +73,7 @@ public class NoteService {
     }
 
     public Mono<Void> deleteAllPatientNote(String patientId) {
-    	return noteRepo.deleteAllPatientNote(patientId);
+    	return noteRepo.deleteByPatientId(patientId);
     }
     
 	

@@ -40,7 +40,7 @@ public class PatientController {
         if (patients.size() > 0)
         	return ResponseEntity.ok(patients); 
         else 
-        	return ResponseEntity.notFound().build();
+        	return ResponseEntity.ok(null);
     }
 
     @GetMapping("/{id}")

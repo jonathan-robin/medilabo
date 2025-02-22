@@ -1,5 +1,6 @@
 package com.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
@@ -23,7 +24,10 @@ public interface NoteRepository extends ReactiveMongoRepository<Note, String> {
 	            "{ $project: { count: { $size: '$termsTrigger'}}}}"})
 			Mono<PatientRiskDto> computeTriggers(Long patientId, String regex);
 		
+		
+		@Query("{'patientId': ?0}")
 		public Mono<Void> deleteByPatientId(String patientId);
+		
 		
 
 	

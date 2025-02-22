@@ -54,16 +54,15 @@ public class PatientController {
                 .retrieve()
                 .bodyToMono(PatientDto[].class)
                 .map(Arrays::asList)
-                .doOnNext(patients -> log.info("Patients récupérés : {}", patients))
                 .map(patients -> {
+                	if (patients != Mono.just(null))
+                		model.addAttribute("patients", patients);
                 	response.setHeader("Authorization", "Bearer " + jwt);
-                    model.addAttribute("patients", patients);
                     return "index";
                 })
                 .onErrorResume(e -> {
                     log.error("Erreur lors de la récupération des patients", e);
-                    model.addAttribute("userCredential", new Credentials());
-                    return Mono.just("redirect:/login");
+                    return Mono.just("home");
                 });
     }
     
@@ -89,7 +88,9 @@ public class PatientController {
                             .retrieve()
                             .bodyToFlux(NoteDto.class)
                             .collectList()
+                            .doOnNext(notes -> log.info("Détails note : {}", notes.toString()))
                             .flatMap(notes -> { 
+                            	notes.forEach(n -> log.info(n.toString()));
                                 model.addAttribute("patient", patient);
                                 model.addAttribute("notes", notes);
                                 return (Mono<String>)getPatientRisk(patient.getId().toString(), model, jwt);
@@ -97,7 +98,7 @@ public class PatientController {
  	                log.error("Erreur lors de la récupération du patient", e);
  	                return Mono.just("/patients");
  	            });
-          });
+         });
 
     }
 
@@ -195,6 +196,7 @@ public class PatientController {
 		if (jwt == null)
 			return Mono.just("/login");
 
+
 	    return webClient.delete()
 	            .uri("/patients/" + id)
 	            .header("Authorization", "Bearer " + jwt)
@@ -203,7 +205,7 @@ public class PatientController {
 	            .bodyToMono(Void.class) 
 	            .then(
 	                webClient.delete()
-	                        .uri("http://localhost:8080/note/delete/{patientId}", id) 
+	                        .uri("/notes/patient/", id) 
 	                        .header("Authorization", "Bearer " + jwt)
 	                        .cookie("JWT", jwt)
 	                        .retrieve()
