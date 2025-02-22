@@ -75,7 +75,6 @@ public class NoteService {
     public Mono<Void> deleteAllPatientNote(String patientId) {
     	return noteRepo.deleteAllPatientNote(patientId);
     }
-
     
 	
     /*********** Import note from json file ***********/

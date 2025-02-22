@@ -1,6 +1,7 @@
 package com.controller;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -87,14 +89,16 @@ public class PatientController {
                             .retrieve()
                             .bodyToFlux(NoteDto.class)
                             .collectList()
-                            .doOnNext(notes -> log.info("Détails note : {}", notes.toString()))
                             .flatMap(notes -> { 
-                            	notes.forEach(n -> log.info(n.toString()));
                                 model.addAttribute("patient", patient);
                                 model.addAttribute("notes", notes);
                                 return (Mono<String>)getPatientRisk(patient.getId().toString(), model, jwt);
-                            });
-                });
+                }).onErrorResume(e -> {
+ 	                log.error("Erreur lors de la récupération du patient", e);
+ 	                return Mono.just("/patients");
+ 	            });
+          });
+
     }
 
     public Mono<String> getPatientRisk(String patientId, Model model, String jwt) {
@@ -191,29 +195,44 @@ public class PatientController {
 		if (jwt == null)
 			return Mono.just("/login");
 
- 	    return webClient.delete()
- 	            .uri("/patients/" + id)
- 	            .header("Authorization", "Bearer " + jwt)
- 	            .cookie("JWT", jwt)
- 	            .retrieve()
- 	            .bodyToMono(PatientDto[].class)
- 	            .map(patients -> {
-                    model.addAttribute("patients", patients);
-                    return "index";
- 	            })
- 	            .onErrorResume(e -> {
- 	               return webClient.get()
- 	       	            .uri("/patients")
- 	       	            .header("Authorization", request.getHeader("Authorization"))
- 	       	            .cookie("JWT", request.getHeader("Authorization").replace("Bearer ", ""))
- 	       	            .retrieve()
- 	       	            .bodyToMono(PatientDto[].class)
- 	       	            .map(patients -> {
- 	                          model.addAttribute("patients", patients);
- 	                          return "index";
- 	       	            });
- 	            });
-
+	    return webClient.delete()
+	            .uri("/patients/" + id)
+	            .header("Authorization", "Bearer " + jwt)
+	            .cookie("JWT", jwt)
+	            .retrieve()
+	            .bodyToMono(Void.class) 
+	            .then(
+	                webClient.delete()
+	                        .uri("http://localhost:8080/note/delete/{patientId}", id) 
+	                        .header("Authorization", "Bearer " + jwt)
+	                        .cookie("JWT", jwt)
+	                        .retrieve()
+	                        .bodyToMono(Void.class) 
+	            )
+	            .then(
+	                webClient.get()
+	                        .uri("/patients")
+	                        .header("Authorization", request.getHeader("Authorization"))
+	                        .cookie("JWT", jwt)
+	                        .retrieve()
+	                        .bodyToMono(PatientDto[].class)
+	                        .map(patients -> {
+	                            model.addAttribute("patients", patients);
+	                            return "index";
+	                        })
+	            )
+	            .onErrorResume(e -> {
+	                return webClient.get()
+	                        .uri("/patients")
+	                        .header("Authorization", request.getHeader("Authorization"))
+	                        .cookie("JWT", jwt)
+	                        .retrieve()
+	                        .bodyToMono(PatientDto[].class)
+	                        .map(patients -> {
+	                            model.addAttribute("patients", patients);
+	                            return "index";
+	                        });
+	            });
     }
     
     @PostMapping("/save")
